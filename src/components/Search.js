@@ -1,17 +1,31 @@
 import React ,{ Component, useState } from 'react';
 import {Alert, View, TextInput, Button, StyleSheet, Text, FlatList, Keyboard } from 'react-native';
+import { getGeocodingByCoords } from '../api/geocoding';
 
 
 const Search = () => {
    
     const [location, setLocation] = useState(null);
+    const [isError, setIsError] = useState(false);
+
+    const requestGeocoding = async (latitude,longitude) => {
+        setIsError(false);
+        try {
+          const geocondingSearchResult = await getGeocodingByCoords(latitude,longitude);
+          console.log(geocondingSearchResult.results[1]);
+         
+        } catch (error) {
+          setIsError(true);
+        }
+      };
 
     const findCoordinates = () => {
 		navigator.geolocation.getCurrentPosition(
 			position => {
-				const location = JSON.stringify(position);
 
-				setLocation( location );
+                const location =position.coords;
+
+				requestGeocoding(position.coords.latitude, position.coords.longitude);
 			},
 			error => Alert.alert(error.message),
 			{ enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
@@ -34,9 +48,7 @@ const Search = () => {
                     title='Me localiser'
                     onPress={findCoordinates}
                 />
-                <Text>
-                    Location: {location}
-                </Text>
+                
             </View>
         </View>
         
