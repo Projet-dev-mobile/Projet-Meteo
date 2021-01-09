@@ -12,12 +12,17 @@ const Search = () => {
         setIsError(false);
         try {
           const geocondingSearchResult = await getGeocodingByCoords(latitude,longitude);
-          console.log(geocondingSearchResult.results[1]);
+          navigateToMeteoInformations(geocondingSearchResult.results[1]);
          
         } catch (error) {
           setIsError(true);
         }
       };
+
+
+    const navigateToMeteoInformations = (meteoInformations) => {
+        navigation.navigate("ViewMeteoInformations", { meteoInformations });
+    };
 
     const findCoordinates = () => {
 		navigator.geolocation.getCurrentPosition(

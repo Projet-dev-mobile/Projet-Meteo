@@ -8,7 +8,7 @@ export async function getGeocodingByCoords(latitude,longitude) {
       const json = await response.json();
       return json;
     } catch (error) {
-      console.log(`Error with function getRestaurantDetails ${error.message}`);
+      console.log(`Error with function getGeocodingByCoords ${error.message}`);
       throw error;
     }
   };

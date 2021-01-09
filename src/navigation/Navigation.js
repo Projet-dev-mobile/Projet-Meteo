@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import Search from '../components/Search';
+import MeteoInformations from '../components/MeteoInformations';
 
 const SearchNavigation = createStackNavigator();
 
@@ -14,6 +15,12 @@ function RootStack() {
         name="ViewSearch"
         component={Search}
         options={{ title: 'Emplacement' }}
+      />
+
+      <SearchNavigation.Screen
+        name="ViewMeteoInformations"
+        component={MeteoInformations}
+        options={{ title: 'Meteo' }}
       />
      
     </SearchNavigation.Navigator>
