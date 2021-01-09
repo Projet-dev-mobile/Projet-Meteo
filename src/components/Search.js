@@ -3,9 +3,12 @@ import {Alert, View, TextInput, Button, StyleSheet, Text, FlatList, Keyboard } f
 import { getGeocodingByCoords } from '../api/geocoding';
 
 
-const Search = () => {
+const Search = ({navigation}) => {
    
     const [location, setLocation] = useState(null);
+    const [city, setCity]=useState(null);
+    const [postal, setPostal]=useState(null);
+    const [country, setCountry ]=useState(null);
     const [isError, setIsError] = useState(false);
 
     const requestGeocoding = async (latitude,longitude) => {
@@ -20,8 +23,14 @@ const Search = () => {
       };
 
 
-    const navigateToMeteoInformations = (meteoInformations) => {
-        navigation.navigate("ViewMeteoInformations", { meteoInformations });
+    const navigateToMeteoInformations = (locationInformations) => {
+
+        setCity(locationInformations["address_components"][2]["long_name"]);
+        
+        setPostal(locationInformations["address_components"][6]["long_name"]);
+        
+        setCountry(locationInformations["address_components"][5]["long_name"]);
+        navigation.navigate("ViewMeteoInformations", { city,postal,country });
     };
 
     const findCoordinates = () => {
