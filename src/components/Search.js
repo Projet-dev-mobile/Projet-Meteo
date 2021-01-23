@@ -20,7 +20,7 @@ const Search = ({navigation}) => {
         } catch (error) {
           setIsError(true);
         }
-      };
+    };
 
 
     const navigateToMeteoInformations = (locationInformations) => {
