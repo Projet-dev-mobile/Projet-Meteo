@@ -20,9 +20,7 @@ export default function App() {
       customMapping={mapping}>
         <NavigationContainer>
           <Navigation />
-          <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Button>HOME</Button>
-          </Layout>
+          
         </NavigationContainer>
       </ApplicationProvider>
     

@@ -1,3 +1,4 @@
+import { Assets } from '@react-navigation/stack';
 import React ,{ Component, useState } from 'react';
 import {Alert, View, TextInput, Button, StyleSheet, Text, FlatList, Keyboard } from 'react-native';
 import { getGeocodingByCoords } from '../api/geocoding';
