@@ -20,29 +20,20 @@ const MeteoInformations = ({ route }) => {
         setCity(route.params.city);
         setPostal(route.params.postal);
         setCountry(route.params.country);
+        setCurrentWeather(route.params.currentWeather);
 
         //Recuperation de la meteo actuelle pour la ville passée en paramètre
-        getCurrentWeather(city);
+        //getCurrentWeather(route.params.city);
     }
 
-    const getCurrentWeather = async (city) => {
-        setIsError(false);
-        try {
-          const meteoSearchResult = await getCurrentWeahterByCity(city);
-          setCurrentWeather(meteoSearchResult);
-          console.log(currentWeather);
-        } catch (error) {
-          setIsError(true);
-        }
-    };
+    
 
     return (
-        console.log(route.params.city),
+        console.log(route.params.currentWeather),
         <View>
             <Text>{route.params.city}</Text>
             <Text>{route.params.postal}</Text>
             <Text>{route.params.country}</Text>
-            
         </View>
     );
 }
