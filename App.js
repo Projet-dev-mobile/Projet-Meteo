@@ -11,14 +11,6 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 
-const SearchIcon = (props) => (
-  <Icon name='search' {...props} />
-);
-
-const PinIcon = (props) => (
-  <Icon name='pin' {...props} />
-);
-
 export default function App() {
   
   return (
@@ -30,10 +22,6 @@ export default function App() {
       customMapping={mapping}>
         <NavigationContainer>
           <Navigation />
-          <Layout style={styles.button}>
-            <Button style={{mapping}} accessoryLeft={SearchIcon}>Rechercher</Button>
-            <Button accessoryLeft={PinIcon}>Localisation</Button>
-          </Layout>
         </NavigationContainer>
       </ApplicationProvider>
     </>

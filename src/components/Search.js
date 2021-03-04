@@ -3,9 +3,18 @@ import React ,{ Component, useState } from 'react';
 import {Alert, View, TextInput, Button, StyleSheet, Text, FlatList, Keyboard } from 'react-native';
 import { getGeocodingByCoords } from '../api/geocoding';
 import { getCurrentWeahterByCity } from '../api/openweathermap';
+import CityTextInput from '../form/CityInput';
+import PostalCodeInput from '../form/PostalCodeInput';
+import CountryTextInput from '../form/CountryInput';
+import { ApplicationProvider, IconRegistry, Layout } from '@ui-kitten/components';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import { default as theme } from '../../theme.json';
+import { default as mapping } from '../../mapping.json';
+import * as eva from '@eva-design/eva';
+import LocateButton from '../form/LocateButton';
+import SearchButton from '../form/SearchButton';
 
-
-const Search = ({navigation}) => {
+    const Search = ({navigation}) => {
    
     const [location, setLocation] = useState(null);
     const [city, setCity]=useState(null);
@@ -66,15 +75,23 @@ const Search = ({navigation}) => {
 			{ enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
 		);
 	};
-
+    
     return (
         <View style={styles.mainView}>
             <View style={styles.topView}>
-                <TextInput
-                    placeholder='Partie de vinz'
-                />
+                <CityTextInput style={styles.city}/>
+                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-evenly'}}>
+                    <View style={{flex: 1}}>
+                        <PostalCodeInput style={styles.pc}/> 
+                    </View>
+                    <View style={{flex: 1}}>
+                        <CountryTextInput style={styles.country}/>
+                    </View>
+                </View>
             </View>
-        
+            <SearchButton/>
+            <LocateButton onPress={findCoordinates}/>
+                   
             <View style={styles.topView}>
                 <TextInput
                     placeholder='Partie de clecle'
@@ -101,5 +118,15 @@ const styles = StyleSheet.create({
     bottomView :{
         flex : 1,
         
+    },
+    city: {
+        paddingLeft: 15,
+    },
+    pc: {
+        flex: 1
+    },
+    country: {
+        flex: 3
     }
+
 });
