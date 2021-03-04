@@ -11,7 +11,7 @@ const Search = ({navigation}) => {
     const [city, setCity]=useState(null);
     const [postal, setPostal]=useState(null);
     const [country, setCountry ]=useState(null);
-    const [currentWeather, setCurrentWeather]= useState(null);
+    //const [currentWeather, setCurrentWeather]= useState(null);
     const [isError, setIsError] = useState(false);
 
     const requestGeocoding = async (latitude,longitude) => {
@@ -19,7 +19,6 @@ const Search = ({navigation}) => {
         try {
             const geocondingSearchResult = await getGeocodingByCoords(latitude,longitude);
             navigateToMeteoInformations(geocondingSearchResult.results[1]);
-        
         } catch (error) {
             setIsError(true);
         }
@@ -35,11 +34,11 @@ const Search = ({navigation}) => {
         setCountry(locationInformations["address_components"][5]["long_name"]);
 
         getCurrentWeather(city);
-        //navigation.navigate("ViewMeteoInformations", { city,postal,country });
     };
 
 
     const getCurrentWeather = async (city) => {
+        /*
         setIsError(false);
         if(currentWeather==null || currentWeather["cod"]=="404"){
             while(currentWeather==null || currentWeather["cod"]=="404"){
@@ -51,7 +50,8 @@ const Search = ({navigation}) => {
                 }
             }
         }
-        navigation.navigate("ViewMeteoInformations", { city,postal,country,currentWeather });
+        */
+        navigation.navigate("ViewMeteoInformations", { city,postal,country });
     };
 
     const findCoordinates = () => {
