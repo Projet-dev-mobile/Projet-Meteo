@@ -17,8 +17,8 @@ export default CityTextInput;
 
 const styles = StyleSheet.create({
     city: {
-         height: 40, 
          borderColor: 'gray', 
          borderBottomWidth: 1,
+
     },
   });
