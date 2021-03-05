@@ -103,10 +103,10 @@ import SearchButton from '../form/SearchButton';
                 {/* <TextInput */}
                     {/* placeholder='Partie de clecle' */}
                 {/* /> */}
-                {/* <Button */}
-                    {/* title='Me localiser' */}
-                    {/* onPress={findCoordinates} */}
-                {/* />     */}
+                 <Button
+                    title='Me localiser'
+                    onPress={findCoordinates}
+                 />   
             </View>
         </View>
         

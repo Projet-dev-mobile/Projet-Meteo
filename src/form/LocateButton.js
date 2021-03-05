@@ -3,7 +3,7 @@ import { Button, Icon} from '@ui-kitten/components';
 import { StyleSheet, Text, View } from 'react-native';
 
 const LocateIcon = (props) => (
-    <Icon name='pin' {...props} />
+    <Icon name='map-pin' {...props} />
 );
 
 const LocateButton = () => {
