@@ -27,7 +27,7 @@ function searchStackScreens() {
       <SearchNavigation.Screen
         name="ViewMeteoInformations"
         component={MeteoInformations}
-        options={{ title: 'Meteo' }}
+        options={{ title: 'Meteo',  headerTitle: false }}
       />
      
     </SearchNavigation.Navigator>
