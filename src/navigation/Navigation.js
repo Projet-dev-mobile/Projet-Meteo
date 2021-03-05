@@ -21,7 +21,7 @@ function searchStackScreens() {
       <SearchNavigation.Screen
         name="ViewSearch"
         component={Search}
-        options={{ title: 'Emplacement' }}
+        options={{ title: 'Emplacement', headerTitle: false, headerShown: false }}
       />
 
       <SearchNavigation.Screen
