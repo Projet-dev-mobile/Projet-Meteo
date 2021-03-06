@@ -11,20 +11,25 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 import { FeatherIconsPack } from './feather-icons';
+import { Provider } from 'react-redux';
+import Store from './src/store/config';
 
 export default function App() {
   
   return (
     <>
+    <Provider store={Store}>
       <IconRegistry icons={ FeatherIconsPack} />
       <ApplicationProvider 
       {...eva} 
       theme={{ ...eva.light, ...theme }}
-      customMapping={mapping}>
+      customMapping={mapping}
+      >
         <NavigationContainer>
           <Navigation />
         </NavigationContainer>
       </ApplicationProvider>
+    </Provider>
     </>
   );
 }

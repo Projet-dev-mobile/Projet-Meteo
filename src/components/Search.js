@@ -14,78 +14,52 @@ import { default as mapping } from '../../mapping.json';
 import * as eva from '@eva-design/eva';
 import LocateButton from '../form/LocateButton';
 import SearchButton from '../form/SearchButton';
+import { connect } from 'react-redux';
 
-    const Search = ({navigation}) => {
+    const Search = ({navigation, favLocations}) => {
    
-    const [location, setLocation] = useState(null);
+    const [isError, setIsError] = useState(false);
     const [city, setCity]=useState(null);
     const [postal, setPostal]=useState(null);
     const [country, setCountry ]=useState(null);
     const [latitude, setLatitude ]=useState(null);
     const [longitude, setLongitude ]=useState(null);
-    const [weather, setWeather]= useState(null);
-    const [isError, setIsError] = useState(false);
 
     const requestGeocoding = async (latitude,longitude) => {
         setIsError(false);
         try {
             const geocondingSearchResult = await getGeocodingByCoords(latitude,longitude);
-            //console.log(geocondingSearchResult);
-            navigateToMeteoInformations(geocondingSearchResult.results[1]);
-            //getWeather(latitude,longitude);
+            saveLocationData(geocondingSearchResult.results[1]);
         } catch (error) {
             setIsError(true);
         }
     };
 
+    const amIaFavLocation = (city) => {
+        if (favLocations.findIndex(i => i === city) !== -1) {
+          return true;
+        }
+        return false;
+      };
 
-    const navigateToMeteoInformations = (locationInformations) => {
+    const saveLocationData = (locationInformations) => {
 
-        setCity(locationInformations["address_components"][2]["long_name"]);setCity(locationInformations["address_components"][2]["long_name"]);
-        
-        setPostal(locationInformations["address_components"][6]["long_name"]);setPostal(locationInformations["address_components"][6]["long_name"]);
-        
-        setCountry(locationInformations["address_components"][5]["long_name"]);setCountry(locationInformations["address_components"][5]["long_name"]);
-
-        //getCurrentWeather(city);
+        setCity(locationInformations["address_components"][2]["long_name"]);
+        setPostal(locationInformations["address_components"][6]["long_name"]);
+        setCountry(locationInformations["address_components"][5]["long_name"]);
+        navigateToMeteoInformations();
     };
 
-    useEffect(()=>{
-        if(latitude!=null && longitude!=null){
-            getWeather(latitude,longitude);
+    const navigateToMeteoInformations = () => {
+        if(latitude!=null && longitude!=null && city !=null){
+            navigation.navigate("ViewMeteoInformations", { city, postal, country, latitude, longitude});
         }
-    },[latitude,longitude])
-
-    useEffect(()=>{
-        if(weather!= null && city !=null){
-            navigation.navigate("ViewMeteoInformations", { city, postal, country, weather});
-        }
-    }, [weather])
-
-    const getWeather = async (city) => {
-        
-        setIsError(false);
-        //if(weather==null || weather["cod"]=="404"){
-            //while(weather==null || weather["cod"]=="404"){
-                try {
-                    //const meteoSearchResult = await getCurrentWeahterByCity(city);
-                    const meteoSearchResult = await getPrevisionForSevenDaysCity(latitude, longitude);
-                    //console.log(meteoSearchResult);
-                    setWeather(meteoSearchResult);
-                    setWeather(meteoSearchResult);
-                } catch (error) {
-                    setIsError(true);
-                }
-            //}
-        //}
-        //navigation.navigate("ViewMeteoInformations", { city, postal, country, weather});
-    };
+    }
 
     const findCoordinates = () => {
 		navigator.geolocation.getCurrentPosition(
 			position => {
                 const location =position.coords;
-                //console.log(location)
                 setLatitude(position.coords.latitude);
                 setLongitude(position.coords.longitude);
 				requestGeocoding(position.coords.latitude, position.coords.longitude);
@@ -132,7 +106,14 @@ import SearchButton from '../form/SearchButton';
     );
 };
 
-export default Search;
+
+const mapStateToProps = (state) => {
+    return {
+      favLocations: state.favLocationsCity
+    }
+}
+
+export default connect(mapStateToProps)(Search);
 
 const styles = StyleSheet.create({
     mainView: { flex: 1 },

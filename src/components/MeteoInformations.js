@@ -3,31 +3,81 @@ import { View, StyleSheet, ActivityIndicator, ScrollView, Image } from 'react-na
 import { Text, Icon, Button} from '@ui-kitten/components';
 import { getPrevisionForSevenDaysCity } from '../api/openweathermap';
 import { Line } from 'react-native-svg';
-import { LineChart, Grid } from 'react-native-svg-charts'
+import { LineChart, Grid } from 'react-native-svg-charts';
+import { connect } from 'react-redux';
+import DisplayError from '../components/DisplayError';
 
-const MeteoInformations = ({ route }) => {
+const MeteoInformations = ({ route ,favLocations, dispatch }) => {
 
-    const [city, setCity]=useState(route.params.city);
-    const [postal, setPostal]=useState(route.params.postal);
-    const [country, setCountry]=useState(route.params.country);
-    const [isError, setIsError] = useState(false);
-    const [prevision, setPrevision] = useState(route.params.weather);
-    
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [city, setCity]=useState(route.params.city);
+  const [postal, setPostal]=useState(route.params.postal);
+  const [country, setCountry]=useState(route.params.country);
+  const [prevision, setPrevision] = useState(null);
+
     useEffect(() => {
-        initilisationInformations();
-      }, []); // Uniquement à l'initialisation
+      setCity(route.params.city);
+      setPostal(route.params.postal);
+      setCountry(route.params.country);
+      setIsLoading(true);
+      requestMeteo(route.params.latitude, route.params.longitude);
+    }, []); // Uniquement à l'initialisation
       
-    const initilisationInformations = () => {
-        setCity(route.params.city);
-        setPostal(route.params.postal);
-        setCountry(route.params.country);
-        setPrevision(route.params.weather);
+    const requestMeteo = async(latitude, longitude) => {
+      try {
+        const meteoSearchResult = await getPrevisionForSevenDaysCity(latitude, longitude);
+        setPrevision(meteoSearchResult);
+        setIsLoading(false);
+      } catch (error) {
+        setIsError(true);
+      }
     };
 
+    // On pourrait définir les actions dans un fichier à part
+    const saveLocation = async () => {
+      const action = { type: 'SAVE_LOCATION', value : city };
+      dispatch(action);
+    }
+
+    const unsaveLocation = async () => {
+      const action = { type: 'UNSAVE_LOCATION', value: city };
+      dispatch(action);
+    }
+
+    const displaySaveLocation = () => {
+      if (favLocations.findIndex(i => i === city) !== -1) {
+        // Le restaurant est sauvegardé
+        return (
+          <Button
+            title='Retirer des favoris'
+            color={Colors.mainGreen}
+            onPress={unsaveLocation}
+          />
+        );
+      }
+      // Le restaurant n'est pas sauvegardé
+      return (
+        <Button
+          title='Ajouter aux favoris'
+          color={Colors.mainGreen}
+          onPress={saveLocation}
+        />
+      );
+    }
+    
     const data = [ 50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80 ];
 
     return (
-        <View style={styles.mainView}>
+      <View style={styles.container}>
+      {isError ?
+        (<DisplayError message='Impossible de récupérer les données du restaurants' />) :
+        (isLoading ?
+          (<View style={styles.containerLoading}>
+            <ActivityIndicator size="large" color="black"/>
+          </View>) :
+          (
+            <View style={styles.mainView}>
           <View style={styles.currentGlobalInfos}>            
               <Text style={styles.city}>{route.params.city}</Text>
               <Text style={styles.weatherTemperature}>{prevision['current']['weather'][0]['description']}, {prevision['current']['temp']}°C</Text>
@@ -67,13 +117,25 @@ const MeteoInformations = ({ route }) => {
             <Text style={styles.title}>Prévisions 7 jours</Text>
           </View>
         </View>
+          )
+        )}
+    </View>
     );
 }
 
-export default MeteoInformations;
+const mapStateToProps = (state) => {
+  return {
+    favLocations: state.favLocationsCIty
+  }
+}
+
+export default connect(mapStateToProps)(MeteoInformations);
 
 const styles = StyleSheet.create({
   mainView: { flex: 4 },
+  container: {
+    flex: 1,
+  },
   currentGlobalInfos :{
       flex : 1,
       marginLeft : '5%',
@@ -137,5 +199,17 @@ const styles = StyleSheet.create({
   utils:
   {
     flexDirection: 'row'
-  }
+  },
+
+  containerLoading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  containerScroll: {
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+  },
 });
