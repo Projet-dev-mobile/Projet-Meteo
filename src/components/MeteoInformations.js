@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ActivityIndicator, ScrollView, Image } from 'react-native';
 import { Text, Icon, Button} from '@ui-kitten/components';
 import { getPrevisionForSevenDaysCity } from '../api/openweathermap';
+import { Line } from 'react-native-svg';
+import { LineChart, Grid } from 'react-native-svg-charts'
 
 const MeteoInformations = ({ route }) => {
 
@@ -21,7 +23,9 @@ const MeteoInformations = ({ route }) => {
         setCountry(route.params.country);
         setPrevision(route.params.weather);
     };
-    
+
+    const data = [ 50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80 ];
+
     return (
         <View style={styles.mainView}>
           <View style={styles.currentGlobalInfos}>            
@@ -45,6 +49,14 @@ const MeteoInformations = ({ route }) => {
 
           <View style={styles.middle1}>
             <Text style={styles.title}>Précipitations</Text>
+            <LineChart
+                style={{ height: 120 }}
+                data={data}
+                svg={{ stroke: 'rgb(134, 65, 244)' }}
+                contentInset={{ top: 20, bottom: 20 }}
+            >
+                <Grid />
+            </LineChart>
           </View>
 
           <View style={styles.middle2}>
