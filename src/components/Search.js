@@ -20,6 +20,8 @@ import SearchButton from '../form/SearchButton';
     const [city, setCity]=useState(null);
     const [postal, setPostal]=useState(null);
     const [country, setCountry ]=useState(null);
+    const [latitude, setLatitude ]=useState(null);
+    const [longitude, setLongitude ]=useState(null);
     //const [currentWeather, setCurrentWeather]= useState(null);
     const [isError, setIsError] = useState(false);
 
@@ -27,6 +29,7 @@ import SearchButton from '../form/SearchButton';
         setIsError(false);
         try {
             const geocondingSearchResult = await getGeocodingByCoords(latitude,longitude);
+            console.log(geocondingSearchResult);
             navigateToMeteoInformations(geocondingSearchResult.results[1]);
         } catch (error) {
             setIsError(true);
@@ -60,15 +63,16 @@ import SearchButton from '../form/SearchButton';
             }
         }
         */
-        navigation.navigate("ViewMeteoInformations", { city,postal,country });
+        navigation.navigate("ViewMeteoInformations", { city, postal, country, latitude, longitude});
     };
 
     const findCoordinates = () => {
 		navigator.geolocation.getCurrentPosition(
 			position => {
-
                 const location =position.coords;
-
+                console.log(location)
+                setLatitude(position.coords.latitude);
+                setLongitude(position.coords.longitude);
 				requestGeocoding(position.coords.latitude, position.coords.longitude);
 			},
 			error => Alert.alert(error.message),

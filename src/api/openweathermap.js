@@ -1,4 +1,4 @@
-const API_KEY ='8fb1009bfe81c1193f9e4d38777b9b34';
+const API_KEY ='252612108adb37704544e291a81bb62f';
 
 export async function getCurrentWeahterByCity(city) {
     try {
@@ -13,10 +13,11 @@ export async function getCurrentWeahterByCity(city) {
     }
   };
 
-  export async function getPrevisionForSevenDaysCity(city) {
+  export async function getPrevisionForSevenDaysCity(latitude, longitude) {
     try {
       const myHeaders = new Headers({ 'user-key': API_KEY });
-      const url = `http://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&cnt=7&appid=${API_KEY}`;
+      const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&lang=fr&exclude=&units=metric&appid=${API_KEY}`;
+      console.log(url);
       const response = await fetch(url, { headers: myHeaders });
       const json = await response.json();
       return json;

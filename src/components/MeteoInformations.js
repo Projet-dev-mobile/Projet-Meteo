@@ -19,11 +19,12 @@ const MeteoInformations = ({ route }) => {
         setCity(route.params.city);
         setPostal(route.params.postal);
         setCountry(route.params.country);
-        requestPrevision(city);
+        console.log(route.params.city);
+        requestPrevision(route.params.city);
     };
 
     const requestPrevision = async (city) => {
-      const res = await getPrevisionForSevenDaysCity(route.params.city);
+      const res = await getPrevisionForSevenDaysCity(route.params.latitude, route.params.longitude);
       setPrevision(res);
     };
 
@@ -31,20 +32,20 @@ const MeteoInformations = ({ route }) => {
         <View style={styles.mainView}>
           <View style={styles.currentGlobalInfos}>            
               <Text style={styles.city}>{route.params.city}</Text>
-              <Text style={styles.weatherTemperature}>Pluie, 13°C</Text>
+              <Text style={styles.weatherTemperature}>{prevision['current']['weather'][0]['description']}, {prevision['current']['temp']}°C</Text>
                 <View style={styles.degree}>
                   <Icon name='arrow-down' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text style={styles.textCurrentWeatherInfos}>10°C</Text>
+                  <Text style={styles.textCurrentWeatherInfos}>{prevision['daily'][0]['temp']['min']}</Text>
                   <Icon name='arrow-up' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text style={styles.textCurrentWeatherInfos}>19°C</Text>
+                  <Text style={styles.textCurrentWeatherInfos}>{prevision['daily'][0]['temp']['max']}</Text>
                 </View>
                 <View style={styles.utils}>
                   <Icon name='cloud' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text style={styles.textCurrentWeatherInfos}>31%</Text>
+                  <Text style={styles.textCurrentWeatherInfos}>{prevision['current']['clouds']}%</Text>
                   <Icon name='wind' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text>6km/h</Text>
+                  <Text>{prevision['current']['wind_speed']}km/h</Text>
                   <Icon name='umbrella' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text>35%</Text>
+                  <Text>{prevision['current']['humidity']}%</Text>
                 </View>
           </View>
 
