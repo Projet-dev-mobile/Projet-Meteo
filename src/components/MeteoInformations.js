@@ -5,11 +5,11 @@ import { getPrevisionForSevenDaysCity } from '../api/openweathermap';
 
 const MeteoInformations = ({ route }) => {
 
-    const [city, setCity]=useState(null);
-    const [postal, setPostal]=useState(null);
-    const [country, setCountry]=useState(null);
+    const [city, setCity]=useState(route.params.city);
+    const [postal, setPostal]=useState(route.params.postal);
+    const [country, setCountry]=useState(route.params.country);
     const [isError, setIsError] = useState(false);
-    const [prevision, setPrevision] = useState(null);
+    const [prevision, setPrevision] = useState(route.params.weather);
     
     useEffect(() => {
         initilisationInformations();
@@ -19,15 +19,9 @@ const MeteoInformations = ({ route }) => {
         setCity(route.params.city);
         setPostal(route.params.postal);
         setCountry(route.params.country);
-        console.log(route.params.city);
-        requestPrevision(route.params.city);
+        setPrevision(route.params.weather);
     };
-
-    const requestPrevision = async (city) => {
-      const res = await getPrevisionForSevenDaysCity(route.params.latitude, route.params.longitude);
-      setPrevision(res);
-    };
-
+    
     return (
         <View style={styles.mainView}>
           <View style={styles.currentGlobalInfos}>            
@@ -50,7 +44,7 @@ const MeteoInformations = ({ route }) => {
           </View>
 
           <View style={styles.middle1}>
-            <Text style={styles.title}></Text>
+            <Text style={styles.title}>Précipitations</Text>
           </View>
 
           <View style={styles.middle2}>

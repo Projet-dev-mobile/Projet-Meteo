@@ -1,8 +1,9 @@
 import { Assets } from '@react-navigation/stack';
-import React ,{ Component, useState } from 'react';
+import React ,{ Component, useState, useEffect } from 'react';
 import {Alert, View, TextInput, Button, StyleSheet, Text, FlatList, Keyboard } from 'react-native';
 import { getGeocodingByCoords } from '../api/geocoding';
 import { getCurrentWeahterByCity } from '../api/openweathermap';
+import { getPrevisionForSevenDaysCity } from '../api/openweathermap';
 import CityTextInput from '../form/CityInput';
 import PostalCodeInput from '../form/PostalCodeInput';
 import CountryTextInput from '../form/CountryInput';
@@ -22,15 +23,16 @@ import SearchButton from '../form/SearchButton';
     const [country, setCountry ]=useState(null);
     const [latitude, setLatitude ]=useState(null);
     const [longitude, setLongitude ]=useState(null);
-    //const [currentWeather, setCurrentWeather]= useState(null);
+    const [weather, setWeather]= useState(null);
     const [isError, setIsError] = useState(false);
 
     const requestGeocoding = async (latitude,longitude) => {
         setIsError(false);
         try {
             const geocondingSearchResult = await getGeocodingByCoords(latitude,longitude);
-            console.log(geocondingSearchResult);
+            //console.log(geocondingSearchResult);
             navigateToMeteoInformations(geocondingSearchResult.results[1]);
+            //getWeather(latitude,longitude);
         } catch (error) {
             setIsError(true);
         }
@@ -39,38 +41,51 @@ import SearchButton from '../form/SearchButton';
 
     const navigateToMeteoInformations = (locationInformations) => {
 
-        setCity(locationInformations["address_components"][2]["long_name"]);
+        setCity(locationInformations["address_components"][2]["long_name"]);setCity(locationInformations["address_components"][2]["long_name"]);
         
-        setPostal(locationInformations["address_components"][6]["long_name"]);
+        setPostal(locationInformations["address_components"][6]["long_name"]);setPostal(locationInformations["address_components"][6]["long_name"]);
         
-        setCountry(locationInformations["address_components"][5]["long_name"]);
+        setCountry(locationInformations["address_components"][5]["long_name"]);setCountry(locationInformations["address_components"][5]["long_name"]);
 
-        getCurrentWeather(city);
+        //getCurrentWeather(city);
     };
 
+    useEffect(()=>{
+        if(latitude!=null && longitude!=null){
+            getWeather(latitude,longitude);
+        }
+    },[latitude,longitude])
 
-    const getCurrentWeather = async (city) => {
-        /*
+    useEffect(()=>{
+        if(weather!= null && city !=null){
+            navigation.navigate("ViewMeteoInformations", { city, postal, country, weather});
+        }
+    }, [weather])
+
+    const getWeather = async (city) => {
+        
         setIsError(false);
-        if(currentWeather==null || currentWeather["cod"]=="404"){
-            while(currentWeather==null || currentWeather["cod"]=="404"){
+        //if(weather==null || weather["cod"]=="404"){
+            //while(weather==null || weather["cod"]=="404"){
                 try {
-                    const meteoSearchResult = await getCurrentWeahterByCity(city);
-                    setCurrentWeather(meteoSearchResult);
+                    //const meteoSearchResult = await getCurrentWeahterByCity(city);
+                    const meteoSearchResult = await getPrevisionForSevenDaysCity(latitude, longitude);
+                    //console.log(meteoSearchResult);
+                    setWeather(meteoSearchResult);
+                    setWeather(meteoSearchResult);
                 } catch (error) {
                     setIsError(true);
                 }
-            }
-        }
-        */
-        navigation.navigate("ViewMeteoInformations", { city, postal, country, latitude, longitude});
+            //}
+        //}
+        //navigation.navigate("ViewMeteoInformations", { city, postal, country, weather});
     };
 
     const findCoordinates = () => {
 		navigator.geolocation.getCurrentPosition(
 			position => {
                 const location =position.coords;
-                console.log(location)
+                //console.log(location)
                 setLatitude(position.coords.latitude);
                 setLongitude(position.coords.longitude);
 				requestGeocoding(position.coords.latitude, position.coords.longitude);
