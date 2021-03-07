@@ -26,3 +26,16 @@ export async function getCurrentWeahterByCity(city) {
       throw error;
     }
   };
+
+  export async function getIconForWeatherPrevision(id) {
+    try {
+      const myHeaders = new Headers({ 'user-key': API_KEY });
+      const url = `https://openweathermap.org/img/wn/${id}@2x.png`;
+      const response = await fetch(url, { headers: myHeaders });
+      const json = await response.json();
+      return json;
+    } catch (error) {
+      console.log(`Error with function getMeteoByCity ${error.message}`);
+      throw error;
+    }
+  };

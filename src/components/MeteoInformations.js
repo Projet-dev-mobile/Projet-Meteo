@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ActivityIndicator, ScrollView, Image } from 'react-native';
-import { Text, Icon, Button} from '@ui-kitten/components';
+import { View, StyleSheet, ActivityIndicator, FlatList, ScrollView, Image, Text } from 'react-native';
+import { Icon, Button} from '@ui-kitten/components';
 import { getPrevisionForSevenDaysCity } from '../api/openweathermap';
 import { Line, parse } from 'react-native-svg';
 import { LineChart, Grid } from 'react-native-svg-charts';
 import { connect } from 'react-redux';
 import DisplayError from '../components/DisplayError';
+import PrevisionRender from '../components/PrevisionRender';
 
 const MeteoInformations = ({ route ,favLocations, dispatch }) => {
 
@@ -17,6 +18,7 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
   const [prevision, setPrevision] = useState(null);
   const [precipitation, setPrecipitation] = useState(null);
   const [time, setTime] = useState(null);
+  const [sevenDays, setSevenDays] = useState(null);
 
     useEffect(() => {
       setCity(route.params.city);
@@ -34,7 +36,6 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
       try {
         const meteoSearchResult = await getPrevisionForSevenDaysCity(latitude, longitude);
         setPrevision(meteoSearchResult);
-        console.log(prevision);
         setIsLoading(false);
       } catch (error) {
         setIsError(true);
@@ -72,18 +73,19 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
         />
       );
     }
-    
+
     const parsePrecipitation = () => {
-      
       // console.log(prevision);
       // console.log(data);
-       const precipitation = prevision['minutely'].map(obj => (obj.precipitation));
-       setPrecipitation(precipitation);
-       console.log(precipitation);
-       const time = prevision['minutely'].map(obj => (obj.dt));
-       setTime(time);
-       console.log(time);
-    }
+      const precipitation = prevision['minutely'].map(obj => (obj.precipitation));
+      setPrecipitation(precipitation);
+      const time = prevision['minutely'].map(obj => ((new Date(obj.dt*1000).toLocaleTimeString().substring(0,5))));
+      setTime(time);
+      const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+      const sevenDays = prevision['daily'].map(obj =>({'day' : days[new Date(obj.dt*1000).getDay()], 'icon' : obj.weather[0].icon, 'humidity' : obj.humidity, 'min' : obj.temp.min, 'max' : obj.temp.max}));
+      console.log(sevenDays);
+      setSevenDays(sevenDays);
+      };
 
     return (
       <View style={styles.container}>
@@ -117,8 +119,11 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
           <View style={styles.middle1}>
             <Text style={styles.title}>Précipitations</Text>
             <LineChart
+                x={time[0],time[29],time[59]}
                 style={{ height: 120 }}
                 data={precipitation}
+                yMax={100}
+                yMin={0}
                 svg={{ stroke: 'rgb(134, 65, 244)' }}
                 contentInset={{ top: 20, bottom: 20 }}
             >
@@ -132,6 +137,10 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
 
           <View style={styles.bottomView}>
             <Text style={styles.title}>Prévisions 7 jours</Text>
+            <FlatList
+              data={sevenDays}
+              renderItem={ ( item ) => <PrevisionRender item={item}/> }
+              />
           </View>
         </View>
           )
