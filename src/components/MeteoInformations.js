@@ -12,7 +12,6 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [city, setCity]=useState(route.params.city);
-  const [postal, setPostal]=useState(route.params.postal);
   const [country, setCountry]=useState(route.params.country);
   const [prevision, setPrevision] = useState(null);
   const [precipitation, setPrecipitation] = useState(null);
@@ -20,7 +19,6 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
 
     useEffect(() => {
       setCity(route.params.city);
-      setPostal(route.params.postal);
       setCountry(route.params.country);
       setIsLoading(true);
       requestMeteo(route.params.latitude, route.params.longitude);

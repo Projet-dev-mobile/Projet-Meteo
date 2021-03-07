@@ -52,7 +52,7 @@ import { connect } from 'react-redux';
 
     const navigateToMeteoInformations = () => {
         if(latitude!=null && longitude!=null && city !=null){
-            navigation.navigate("ViewMeteoInformations", { city, postal, country, latitude, longitude});
+            navigation.navigate("ViewMeteoInformations", { city, country, latitude, longitude});
         }
     }
 
