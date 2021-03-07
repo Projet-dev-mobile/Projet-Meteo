@@ -16,7 +16,6 @@ const Prevision = ({ item }) =>
     };
 
   return (
-  console.log(item),
   <View style={styles.mainView}>
     <View style={styles.firstView}>
         <Text>{item.item.day}</Text>

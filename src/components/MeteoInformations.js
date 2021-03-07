@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ActivityIndicator, FlatList, ScrollView, Image, Text } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, FlatList, ScrollView, Image, Text, ListView } from 'react-native';
 import { Icon, Button} from '@ui-kitten/components';
 import { getPrevisionForSevenDaysCity } from '../api/openweathermap';
 import { Line, parse } from 'react-native-svg';
@@ -7,6 +7,7 @@ import { LineChart, Grid } from 'react-native-svg-charts';
 import { connect } from 'react-redux';
 import DisplayError from '../components/DisplayError';
 import PrevisionRender from '../components/PrevisionRender';
+import PrevisionHourly from '../components/PrevisionHourly';
 
 const MeteoInformations = ({ route ,favLocations, dispatch }) => {
 
@@ -19,6 +20,7 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
   const [precipitation, setPrecipitation] = useState(null);
   const [time, setTime] = useState(null);
   const [sevenDays, setSevenDays] = useState(null);
+  const [hourly, setHourly] = useState(null);
 
     useEffect(() => {
       setCity(route.params.city);
@@ -82,9 +84,10 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
       const time = prevision['minutely'].map(obj => ((new Date(obj.dt*1000).toLocaleTimeString().substring(0,5))));
       setTime(time);
       const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-      const sevenDays = prevision['daily'].map(obj =>({'day' : days[new Date(obj.dt*1000).getDay()], 'icon' : obj.weather[0].icon, 'humidity' : obj.humidity, 'min' : obj.temp.min, 'max' : obj.temp.max}));
-      console.log(sevenDays);
+      const sevenDays = prevision['daily'].map(obj =>({'day' : days[new Date(obj.dt*1000).getDay()], 'icon' : obj.weather[0].icon, 'humidity' : obj.humidity, 'min' : parseInt(obj.temp.min,10), 'max' : parseInt(obj.temp.max,10)}));
       setSevenDays(sevenDays);
+      const hourly = prevision['hourly'].map(obj => ({'hour' : new Date(obj.dt*1000).toLocaleTimeString().substring(0,5), 'icon' : 'https://openweathermap.org/img/wn/' + obj.weather[0].icon + '@2x.png', 'temp' : parseInt(obj.temp, 10)}));
+      setHourly(hourly);
       };
 
     return (
@@ -99,18 +102,18 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
             <View style={styles.mainView}>
           <View style={styles.currentGlobalInfos}>            
               <Text style={styles.city}>{route.params.city}</Text>
-              <Text style={styles.weatherTemperature}>{prevision['current']['weather'][0]['description']}, {prevision['current']['temp']}°C</Text>
+              <Text style={styles.weatherTemperature}>{prevision['current']['weather'][0]['description']}, {parseInt(prevision['current']['temp'])}°C</Text>
                 <View style={styles.degree}>
                   <Icon name='arrow-down' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text style={styles.textCurrentWeatherInfos}>{prevision['daily'][0]['temp']['min']}</Text>
+                  <Text style={styles.textCurrentWeatherInfos}>{parseInt(prevision['daily'][0]['temp']['min'])}</Text>
                   <Icon name='arrow-up' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text style={styles.textCurrentWeatherInfos}>{prevision['daily'][0]['temp']['max']}</Text>
+                  <Text style={styles.textCurrentWeatherInfos}>{parseInt(prevision['daily'][0]['temp']['max'])}</Text>
                 </View>
                 <View style={styles.utils}>
                   <Icon name='cloud' style={{ width: 20, height: 20 }} fill='#3366FF'/>
                   <Text style={styles.textCurrentWeatherInfos}>{prevision['current']['clouds']}%</Text>
                   <Icon name='wind' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text>{prevision['current']['wind_speed']}km/h</Text>
+                  <Text>{parseInt(prevision['current']['wind_speed'])}km/h</Text>
                   <Icon name='umbrella' style={{ width: 20, height: 20 }} fill='#3366FF'/>
                   <Text>{prevision['current']['humidity']}%</Text>
                 </View>
@@ -133,6 +136,11 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
 
           <View style={styles.middle2}>
             <Text style={styles.title}>Evolution 24h</Text>
+            <FlatList
+              horizontal={true}
+              data={hourly}
+              renderItem={ ( item ) => <PrevisionHourly item={item}/> }
+              />
           </View>
 
           <View style={styles.bottomView}>
@@ -185,6 +193,7 @@ const styles = StyleSheet.create({
     marginBottom : '5%',
     marginRight : '5%',
     borderWidth: 1,
+    flexDirection: 'row',
   },
   bottomView :{
     flex : 1,
@@ -205,7 +214,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
-
+  hourly:{
+    flexDirection: 'row',
+  },
   weatherTemperature: {
     fontSize: 20,
     fontWeight : 'bold',
