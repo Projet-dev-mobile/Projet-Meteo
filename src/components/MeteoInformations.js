@@ -14,7 +14,6 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [city, setCity]=useState(route.params.city);
-  const [postal, setPostal]=useState(route.params.postal);
   const [country, setCountry]=useState(route.params.country);
   const [prevision, setPrevision] = useState(null);
   const [precipitation, setPrecipitation] = useState(null);
@@ -25,7 +24,6 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
 
     useEffect(() => {
       setCity(route.params.city);
-      setPostal(route.params.postal);
       setCountry(route.params.country);
       setIsLoading(true);
       requestMeteo(route.params.latitude, route.params.longitude);
@@ -105,43 +103,49 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
           </View>) :
           (
             <View style={styles.mainView}>
-          <View style={styles.currentGlobalInfos}>            
-              <Text style={styles.city}>{route.params.city}</Text>
-              <Text style={styles.weatherTemperature}>{prevision['current']['weather'][0]['description']}, {parseInt(prevision['current']['temp'])}°C</Text>
-                <View style={styles.degree}>
-                  <Icon name='arrow-down' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text style={styles.textCurrentWeatherInfos}>{parseInt(prevision['daily'][0]['temp']['min'])}</Text>
-                  <Icon name='arrow-up' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text style={styles.textCurrentWeatherInfos}>{parseInt(prevision['daily'][0]['temp']['max'])}</Text>
-                </View>
-                <View style={styles.utils}>
-                  <Icon name='cloud' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text style={styles.textCurrentWeatherInfos}>{prevision['current']['clouds']}%</Text>
-                  <Icon name='wind' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text>{parseInt(prevision['current']['wind_speed'])}km/h</Text>
-                  <Icon name='umbrella' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text>{prevision['current']['humidity']}%</Text>
-                </View>
+          <View style={styles.currentGlobalInfos}>
+              <View style={styles.cityText}>            
+                <Text style={styles.city}>{route.params.city}</Text>
+              </View>
+              <View style={styles.descriptionText}>  
+                  <Text style={styles.weatherTemperature}>{prevision['current']['weather'][0]['description']}, {parseInt(prevision['current']['temp'])}°C</Text>
+              </View>
+              <View style={styles.degree}>
+                <Icon name='arrow-down' style={{ width: 20, height: 20 }} fill='#3366FF'/>
+                <Text style={styles.textCurrentWeatherInfos}>{parseInt(prevision['daily'][0]['temp']['min'])}</Text>
+                <Icon name='arrow-up' style={{ width: 20, height: 20 }} fill='#3366FF'/>
+                <Text style={styles.textCurrentWeatherInfos}>{parseInt(prevision['daily'][0]['temp']['max'])}</Text>
+              </View>
+              <View style={styles.utils}>
+                <Icon name='cloud' style={{ width: 20, height: 20 }} fill='#3366FF'/>
+                <Text style={styles.textCurrentWeatherInfos}>{prevision['current']['clouds']}%</Text>
+                <Icon name='wind' style={{ width: 20, height: 20 }} fill='#3366FF'/>
+                <Text>{parseInt(prevision['current']['wind_speed'])}km/h</Text>
+                <Icon name='umbrella' style={{ width: 20, height: 20 }} fill='#3366FF'/>
+                <Text>{prevision['current']['humidity']}%</Text>
+              </View>
           </View>
 
           <View style={styles.middle1}>
-            <Text style={styles.title}>Précipitations</Text>
-            <LineChart
-                x={time[0],time[29],time[59]}
-                style={{ height: 120 }}
-                data={precipitation}
-                yMax={100}
-                yMin={0}
-                svg={{ stroke: 'rgb(134, 65, 244)' }}
-                contentInset={{ top: 20, bottom: 20 }}
-            >
-                <Grid />
-            </LineChart>
+            <View style={styles.middle1Text}>
+              <Text style={styles.title}>Précipitations</Text>
+            </View>
+            <View style={styles.middle1Chart}>
+              <LineChart
+                  style={{ height: 100 }}
+                  data={precipitation}
+                  yMax={100}
+                  yMin={0}
+                  svg={{ strokeWidth:2, stroke: 'rgb(54, 218, 250)' }}
+                  showGrid={false}
+              >
+              </LineChart>
+            </View>
           </View>
 
           <View style={styles.middle2}>
             <View style={styles.middle2Text}>
-              <Text style={styles.title}>Prévisions 24h</Text>
+              <Text style={styles.title}>Evolution 24h</Text>
             </View>
             <View style={styles.middle2List}>
               <FlatList
@@ -187,12 +191,22 @@ const styles = StyleSheet.create({
   currentGlobalInfos :{
       flex : 1,
       backgroundColor : 'rgb(190,190,190)',
-
+  },
+  cityText: {
+    paddingTop: 15,
   },
   middle1 :{
     flex : 1,
     marginLeft : '5%',
     marginRight : '5%',
+  },
+  middle1Text :{
+    paddingBottom: 8,
+    paddingTop: 8
+  },
+  middle1Chart: {
+    borderLeftWidth:1,
+    borderBottomWidth: 1
   },
   middle2 :{
     flex : 1,
@@ -214,7 +228,7 @@ const styles = StyleSheet.create({
     marginBottom: '8%'
   },
   bottomViewText:{
-    paddingBottom: 10
+    paddingBottom: 8
   },
   bottomViewList: {
 
@@ -223,6 +237,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontWeight: 'bold',
     fontSize: 25,
+    fontFamily: 'Comfortaa'
   },
 
   title: {
