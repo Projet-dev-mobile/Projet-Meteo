@@ -24,14 +24,19 @@ const Prevision = ({ item }) =>
         <Image style={styles.image} source={{uri: icon}} />
     </View>
     <View style={styles.thirdView}>
-        <Icon name='umbrella' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-        <Text> {item.item.humidity}</Text>
+        <View style={styles.umbrella}>
+            <Icon name='umbrella' style={{ width: 25, height: 25 }} fill='#3366FF'/>
+            <Text> {item.item.humidity}</Text>
+        </View>
 
-        <Icon name='arrow-down' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-        <Text>{item.item.min}</Text>
-
-        <Icon name='arrow-up' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-        <Text>{item.item.max}</Text>
+        <View style={styles.min}>
+            <Icon name='arrow-down' style={{ width: 25, height: 25 }} fill='#3366FF'/>
+            <Text>{item.item.min}</Text>
+        </View>
+        <View style={styles.max}>
+            <Icon name='arrow-up' style={{ width: 25, height: 25 }} fill='#3366FF'/>
+            <Text>{item.item.max}</Text>
+        </View>
     </View>
   </View> );
 };
@@ -41,20 +46,41 @@ export default Prevision;
 const styles = StyleSheet.create({
     mainView:{
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        height: 60,
+        justifyContent: 'center',
+        borderBottomWidth: 1,
     },
     firstView:{
-        flex:1
+        flex:3,
+        justifyContent: 'center'
     },
     secondView:{
-        flex:1
+        flex: 2,
+        justifyContent: 'center'
     },
     thirdView:{
         flex: 2,
+        justifyContent: 'center',
         flexDirection: 'row'
     },
+    umbrella: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    min: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    max: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     image: {
-        width: 30,
-        height: 30,
+        width: 45,
+        height: 45,
     }
 });

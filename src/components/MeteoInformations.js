@@ -21,6 +21,7 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
   const [time, setTime] = useState(null);
   const [sevenDays, setSevenDays] = useState(null);
   const [hourly, setHourly] = useState(null);
+  const [cityName, setCityName] = useState(null);
 
     useEffect(() => {
       setCity(route.params.city);
@@ -79,6 +80,10 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
     const parsePrecipitation = () => {
       // console.log(prevision);
       // console.log(data);
+      var cityName = prevision['current']['weather'][0]['description'];
+      // var name = cityName[0];
+      // cityName[0] = name.toUpperCase();
+      setCityName(cityName);
       const precipitation = prevision['minutely'].map(obj => (obj.precipitation));
       setPrecipitation(precipitation);
       const time = prevision['minutely'].map(obj => ((new Date(obj.dt*1000).toLocaleTimeString().substring(0,5))));
@@ -135,20 +140,28 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
           </View>
 
           <View style={styles.middle2}>
-            <Text style={styles.title}>Evolution 24h</Text>
-            <FlatList
-              horizontal={true}
-              data={hourly}
-              renderItem={ ( item ) => <PrevisionHourly item={item}/> }
-              />
+            <View style={styles.middle2Text}>
+              <Text style={styles.title}>Prévisions 24h</Text>
+            </View>
+            <View style={styles.middle2List}>
+              <FlatList
+                horizontal={true}
+                data={hourly}
+                renderItem={ ( item ) => <PrevisionHourly item={item}/> }
+                />
+            </View>
           </View>
 
           <View style={styles.bottomView}>
-            <Text style={styles.title}>Prévisions 7 jours</Text>
-            <FlatList
-              data={sevenDays}
-              renderItem={ ( item ) => <PrevisionRender item={item}/> }
-              />
+            <View style={styles.bottomViewText}>
+              <Text style={styles.title}>Prévisions 7 jours</Text>
+            </View>
+            <View style={styles.bottomViewList}>
+              <FlatList
+                data={sevenDays}
+                renderItem={ ( item ) => <PrevisionRender item={item}/> }
+                />
+            </View>
           </View>
         </View>
           )
@@ -166,44 +179,46 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps)(MeteoInformations);
 
 const styles = StyleSheet.create({
-  mainView: { flex: 4 },
+  mainView: { flex: 4,         
+  backgroundColor : 'rgb(220,220,220)',},
   container: {
     flex: 1,
   },
   currentGlobalInfos :{
       flex : 1,
-      marginLeft : '5%',
-      marginTop : '5%',
-      marginBottom : '5%',
-      marginRight : '5%',
-      borderWidth: 1,
+      backgroundColor : 'rgb(190,190,190)',
+
   },
   middle1 :{
     flex : 1,
     marginLeft : '5%',
-    marginTop : '5%',
-    marginBottom : '5%',
     marginRight : '5%',
-    borderWidth: 1,
   },
   middle2 :{
     flex : 1,
-    marginLeft : '5%',
-    marginTop : '5%',
-    marginBottom : '5%',
-    marginRight : '5%',
-    borderWidth: 1,
-    flexDirection: 'row',
+  },
+  middle2Text:{
+    flex: 1,
+    marginLeft : '5%'
+  },
+  middle2List:{
+    flex: 3,
+    marginLeft : '8%',
+    marginRight : '8%',
   },
   bottomView :{
     flex : 1,
+    paddingTop: 10,
     marginLeft : '5%',
-    marginTop : '5%',
-    marginBottom : '5%',
     marginRight : '5%',
-    borderWidth: 1,
+    marginBottom: '8%'
   },
+  bottomViewText:{
+    paddingBottom: 10
+  },
+  bottomViewList: {
 
+  },
   city: {
     paddingLeft: 10,
     fontWeight: 'bold',
