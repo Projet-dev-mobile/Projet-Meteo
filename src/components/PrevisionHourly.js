@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Image} from 'react-native';
 import { Icon } from '@ui-kitten/components';
+import SpecialText from '../form/SpecialText';
 
 const PrevisionHourly = ({ item }) =>
 {
@@ -8,13 +9,13 @@ const PrevisionHourly = ({ item }) =>
   <View style={styles.mainView}>
         
             <View style={styles.firstView}>
-                <Text>{item.item.hour}</Text>
+                <SpecialText style={styles.text} text={item.item.hour}/>
             </View>
             <View style={styles.secondView}>
                 <Image style={styles.image} source={{uri: item.item.icon}} />
             </View>
             <View style={styles.thirdView}>
-                <Text>{item.item.temp}°C</Text>
+                <SpecialText style={styles.text} text={item.item.temp + '°C'}/>
             </View>
         
   </View> );
@@ -42,5 +43,8 @@ const styles = StyleSheet.create({
     image: {
         width: 30,
         height: 30,
+    },
+    text:{
+        fontSize: 12
     }
 });

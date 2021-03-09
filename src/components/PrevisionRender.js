@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Image} from 'react-native';
 import { Icon } from '@ui-kitten/components';
+import SpecialText from '../form/SpecialText';
 
 const Prevision = ({ item }) =>
 {
@@ -18,24 +19,23 @@ const Prevision = ({ item }) =>
   return (
   <View style={styles.mainView}>
     <View style={styles.firstView}>
-        <Text>{item.item.day}</Text>
+        <SpecialText style={styles.daytext} text={item.item.day}/>
     </View>
     <View style={styles.secondView}>
         <Image style={styles.image} source={{uri: icon}} />
     </View>
     <View style={styles.thirdView}>
-        <View style={styles.umbrella}>
+        <View style={styles.infos}>
             <Icon name='umbrella' style={{ width: 25, height: 25 }} fill='#3366FF'/>
-            <Text> {item.item.humidity}</Text>
+            <SpecialText style={styles.text} text={item.item.humidity + '%'}/>
         </View>
-
-        <View style={styles.min}>
+        <View style={styles.infos}>
             <Icon name='arrow-down' style={{ width: 25, height: 25 }} fill='#3366FF'/>
-            <Text>{item.item.min}</Text>
+            <SpecialText style={styles.text} text={item.item.min + '°C'}/>
         </View>
-        <View style={styles.max}>
+        <View style={styles.infos}>
             <Icon name='arrow-up' style={{ width: 25, height: 25 }} fill='#3366FF'/>
-            <Text>{item.item.max}</Text>
+            <SpecialText style={styles.text} text={item.item.max + '°C'}/>
         </View>
     </View>
   </View> );
@@ -64,23 +64,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row'
     },
-    umbrella: {
+    infos: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
-    },
-    min: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    max: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingRight: 3
     },
     image: {
         width: 45,
         height: 45,
+    },
+    daytext:{
+        fontSize: 17
+    },
+    text:{
+        fontSize: 12
     }
 });

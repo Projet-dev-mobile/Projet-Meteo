@@ -9,29 +9,38 @@ import { default as theme } from './theme.json';
 import { default as mapping } from './mapping.json';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import * as Font from 'expo-font';
-import { AppLoading } from 'expo';
+import  AppLoading  from 'expo-app-loading';
 import { FeatherIconsPack } from './feather-icons';
 import { Provider } from 'react-redux';
 import Store from './src/store/config';
+import { useFonts } from '@expo-google-fonts/inter';
 
 export default function App() {
   
-  return (
-    <>
-    <Provider store={Store}>
-      <IconRegistry icons={ FeatherIconsPack} />
-      <ApplicationProvider 
-      {...eva} 
-      theme={{ ...eva.light, ...theme }}
-      customMapping={mapping}
-      >
-        <NavigationContainer>
-          <Navigation />
-        </NavigationContainer>
-      </ApplicationProvider>
-    </Provider>
-    </>
-  );
+  let [fontsLoaded] = useFonts({
+    'Comfortaa': require('./assets/fonts/Comfortaa-Bold.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+    return (
+        <>
+        <Provider store={Store}>
+          <IconRegistry icons={ FeatherIconsPack} />
+          <ApplicationProvider 
+          {...eva} 
+          theme={{ ...eva.light, ...theme }}
+          customMapping={mapping}
+          >
+            <NavigationContainer>
+              <Navigation />
+            </NavigationContainer>
+          </ApplicationProvider>
+        </Provider>
+        </>
+      );
+    }
 }
 
 const styles = StyleSheet.create({
