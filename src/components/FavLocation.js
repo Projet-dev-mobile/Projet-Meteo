@@ -6,20 +6,21 @@ import FavLocationListItem from '../components/FavLocationListItem';
 
 import { getGeocodingByCity } from '../api/geocoding.js';
 
-const FavLocation = ({ route, navigation,  favLocations }) => {
+const FavLocation = ({ route, navigation,  favLocations, dispatch }) => {
 
     const [locations, setLocations] = useState([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isError, setIsError] = useState(false);
 
     useEffect(() => {
+        console.log(favLocations);
         refreshFavLocations();
-    }, []); // A chaque fois que les restaurants favoris changent A FAIRE : METTRE FAVLOCATIONS DANS LES CROCHETS
+    }, [favLocations]); // A chaque fois que les restaurants favoris changent A FAIRE : METTRE FAVLOCATIONS DANS LES CROCHETS
 
     const refreshFavLocations = async () => {
         setIsRefreshing(true);
         setIsError(false);
-        favLocations=['Metz','Toulouse', 'Marseille'];
+        //favLocations=['Metz','Toulouse', 'Marseille'];
         let locations = [];
         try {
           for (const city of favLocations) {
@@ -66,7 +67,13 @@ const FavLocation = ({ route, navigation,  favLocations }) => {
     );
 }
 
-export default FavLocation;
+const mapStateToProps = (state) => {
+    return {
+        favLocations: state.favLocationsID
+    }
+  }
+  
+  export default connect(mapStateToProps)(FavLocation);
 
 const styles = StyleSheet.create({
     container: {

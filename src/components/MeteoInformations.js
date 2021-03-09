@@ -9,6 +9,7 @@ import DisplayError from '../components/DisplayError';
 import PrevisionRender from '../components/PrevisionRender';
 import PrevisionHourly from '../components/PrevisionHourly';
 import SpecialText from '../form/SpecialText';
+import Colors from '../definitions/Colors';
 
 const MeteoInformations = ({ route ,favLocations, dispatch }) => {
   const [isError, setIsError] = useState(false);
@@ -45,36 +46,41 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
     };
 
     // On pourrait définir les actions dans un fichier à part
-    const saveLocation = async () => {
-      const action = { type: 'SAVE_LOCATION', value : city };
-      dispatch(action);
-    }
+  const saveLocation = async () => {
+    const action = { type: 'SAVE_LOCATION', value: city };
+    dispatch(action);
+  }
 
-    const unsaveLocation = async () => {
-      const action = { type: 'UNSAVE_LOCATION', value: city };
-      dispatch(action);
-    }
+  const unsaveLocation = async () => {
+    const action = { type: 'UNSAVE_LOCATION', value: city };
+    dispatch(action);
+  }
 
-    const displaySaveLocation = () => {
-      if (favLocations.findIndex(i => i === city) !== -1) {
-        // Le restaurant est sauvegardé
-        return (
-          <Button
-            title='Retirer des favoris'
-            color={Colors.mainGreen}
-            onPress={unsaveLocation}
-          />
-        );
-      }
-      // Le restaurant n'est pas sauvegardé
+  const displaySaveLocation = () => {
+    if (favLocations.findIndex(i => i === city) !== -1) {
+      // La localisation est sauvegardé
+      console.log('est sauvegardé');
       return (
         <Button
-          title='Ajouter aux favoris'
+          title='Retirer des favoris'
           color={Colors.mainGreen}
-          onPress={saveLocation}
-        />
+          onPress={unsaveLocation}
+        >
+        Retirer des favoris
+        </Button>
       );
     }
+    // La localisation n'est pas sauvegardé
+    return (
+      <Button
+        title='Ajouter aux favoris'
+        color={Colors.mainGreen}
+        onPress={saveLocation}
+      >
+        Ajouter aux favoris
+        </Button>
+    );
+  }
 
     const parsePrecipitation = () => {
       const correctName = prevision['current']['weather'][0]['description'].charAt(0).toUpperCase() + prevision['current']['weather'][0]['description'].substring(1);
@@ -93,13 +99,16 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
     return (
       <View style={styles.container}>
       {isError ?
-        (<DisplayError message='Impossible de récupérer les données du restaurants' />) :
+        (<DisplayError message='Impossible de récupérer les données de la locatisation' />) :
         (isLoading ?
           (<View style={styles.containerLoading}>
             <ActivityIndicator size="large" color="black"/>
           </View>) :
           (
             <View style={styles.mainView}>
+              <View>
+              {displaySaveLocation()}
+              </View>
           <View style={styles.currentGlobalInfos}>
               <View style={styles.cityText}>            
                 <SpecialText style={styles.city} text={route.params.city}/>
@@ -175,7 +184,7 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
 
 const mapStateToProps = (state) => {
   return {
-    favLocations: state.favLocationsCIty
+    favLocations: state.favLocationsID
   }
 }
 

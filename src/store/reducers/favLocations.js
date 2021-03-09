@@ -1,4 +1,4 @@
-const initialState = { favLocationsCity: [] }
+const initialState = { favLocationsID: [] }
 
 function favLocations(state = initialState, action) {
   let nextState
@@ -6,13 +6,13 @@ function favLocations(state = initialState, action) {
     case 'SAVE_LOCATION':
       nextState = {
         ...state,
-        favLocationsCity: [...state.favLocationsCity, action.value]
+        favLocationsID: [...state.favLocationsID, action.value]
       };
       return nextState || state
     case 'UNSAVE_LOCATION':
       nextState = {
         ...state,
-        favLocationsCity: state.favLocationsCity.filter(city => city !== action.value)
+        favLocationsID: state.favLocationsID.filter(id => id !== action.value)
       };
       return nextState || state
     default:

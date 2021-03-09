@@ -1,7 +1,7 @@
 import { Assets } from '@react-navigation/stack';
 import React ,{ Component, useState, useEffect } from 'react';
 import {Alert, View, TextInput, Button, StyleSheet, Text, FlatList, Keyboard } from 'react-native';
-import { getGeocodingByCoords } from '../api/geocoding';
+import { getGeocodingByCity, getGeocodingByCoords, getGeocodingByCityPostalAndCountry } from '../api/geocoding';
 import { getCurrentWeahterByCity } from '../api/openweathermap';
 import { getPrevisionForSevenDaysCity } from '../api/openweathermap';
 import CityTextInput from '../form/CityInput';
@@ -18,6 +18,9 @@ import { connect } from 'react-redux';
 
     const Search = ({navigation, favLocations}) => {
    
+    const [cityValue, onChangeTextCity] = useState('');
+    const [postalValue, onChangeTextPostal] = useState('');
+    const [countryValue, onChangeTextCountry] = useState('');
     const [isError, setIsError] = useState(false);
     const [city, setCity]=useState(null);
     const [postal, setPostal]=useState(null);
@@ -25,11 +28,11 @@ import { connect } from 'react-redux';
     const [latitude, setLatitude ]=useState(null);
     const [longitude, setLongitude ]=useState(null);
 
-    const requestGeocoding = async (latitude,longitude) => {
+    const requestGeocoding = async (latitude_,longitude_) => {
         setIsError(false);
         try {
-            const geocondingSearchResult = await getGeocodingByCoords(latitude,longitude);
-            saveLocationData(geocondingSearchResult.results[1]);
+            const geocondingSearchResult = await getGeocodingByCoords(latitude_,longitude_);
+            saveLocationData(geocondingSearchResult.results[1], latitude_,longitude_);
         } catch (error) {
             setIsError(true);
         }
@@ -42,15 +45,19 @@ import { connect } from 'react-redux';
         return false;
       };
 
-    const saveLocationData = (locationInformations) => {
+    const saveLocationData = (locationInformations,latitude_,longitude_) => {
 
         setCity(locationInformations["address_components"][2]["long_name"]);
+        const city_=locationInformations["address_components"][2]["long_name"];
         setPostal(locationInformations["address_components"][6]["long_name"]);
         setCountry(locationInformations["address_components"][5]["long_name"]);
-        navigateToMeteoInformations();
+        navigateToMeteoInformations(latitude_,longitude_,city_);
     };
 
-    const navigateToMeteoInformations = () => {
+    const navigateToMeteoInformations = (latitude_,longitude_,city_) => {
+        const latitude=latitude_;
+        const longitude=longitude_;
+        const city=city_;
         if(latitude!=null && longitude!=null && city !=null){
             navigation.navigate("ViewMeteoInformations", { city, country, latitude, longitude});
         }
@@ -68,38 +75,102 @@ import { connect } from 'react-redux';
 			{ enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
 		);
 	};
+    
+    const handleCity = (text) => {
+        onChangeTextCity(text);
+    }
+
+    const handlePostal = (text) => {
+        onChangeTextPostal(text);
+    }
+
+    const handleCountry = (text) => {
+        onChangeTextCountry(text);
+    }
+
+    const getLocation = async () => {
+        city_= '';
+        country_='';
+        setIsError(false);
+        try {
+            const geocodingSearchResult = await getGeocodingByCityPostalAndCountry(cityValue,postalValue,countryValue);
+            geocodingSearchResult.results[0]['address_components'].forEach(element => {
+                switch(element['types'][0]){
+                    case 'locality': {
+                        setCity(element['long_name']);
+                        city_=element['long_name'];
+                        break;
+                    }
+                    case 'country': {
+                        setCountry(element['long_name']);
+                        country_=element['long_name'];
+                        break;
+                    } 
+                }
+            });
+            setLatitude(geocodingSearchResult.results[0]['geometry']['location']['lat']);
+            const city=city_;
+            const country=country_;
+            const latitude=geocodingSearchResult.results[0]['geometry']['location']['lat'];
+            const longitude=geocodingSearchResult.results[0]['geometry']['location']['lng']
+            setLongitude(geocodingSearchResult.results[0]['geometry']['location']['lng']);
+            navigation.navigate("ViewMeteoInformations", { city, country, latitude, longitude});
+        } catch (error) {
+            setIsError(true);
+        }
+    };
+
     return (
         <View style={styles.mainView}>
             <View style={styles.firstView}>
                 <Text style={styles.locateText}>Emplacement</Text>
             </View>
             <View style={styles.secondView}>
-                <CityTextInput style={styles.city}/>
+                {/* <CityTextInput style={styles.city}/> */}
+                <TextInput
+                    style={styles.form}
+                    onChangeText = {handleCity}
+                    placeholder="Ville"
+                />
                 <View style={styles.rowView}>
                     <View style={styles.pc}>
-                        <PostalCodeInput style={styles.pcText}/>
+                        <TextInput
+                            style={styles.form}
+                            onChangeText = {handlePostal}
+                            placeholder="Code postal"
+                        />
                     </View>
                     <View style={styles.country}>
-                        <CountryTextInput style={styles.countryText}/>
+                        <TextInput
+                            style={styles.form}
+                            onChangeText = {handleCountry}
+                            placeholder="Pays"
+                        />
                     </View> 
                 </View>
             </View>
             <View style={styles.thirdView}>
                 <View style={styles.searchButton}>
-                    <SearchButton/>
+                    {/* <SearchButton/> */}
+                    <Button
+                    title='Rechercher'
+                    onPress={getLocation}
+                    />  
                 </View>
                 <View style={styles.searchLocate}>
-                    <LocateButton onPress={findCoordinates}/>
+                    {/* <LocateButton onPress={test}/> */}
                 </View>
             </View>
             <View style={styles.fourthView}>
                 {/* <TextInput */}
                     {/* placeholder='Partie de clecle' */}
                 {/* /> */}
-                 <Button
-                    title='Me localiser'
-                    onPress={findCoordinates}
-                 />   
+                <View style={styles.searchButton}>
+                    <Button
+                        title='Me localiser'
+                        onPress={findCoordinates}
+                    />  
+                </View> 
             </View>
         </View>
         
@@ -107,13 +178,8 @@ import { connect } from 'react-redux';
 };
 
 
-const mapStateToProps = (state) => {
-    return {
-      favLocations: state.favLocationsCity
-    }
-}
 
-export default connect(mapStateToProps)(Search);
+export default Search;
 
 const styles = StyleSheet.create({
     mainView: { flex: 1 },
@@ -167,5 +233,10 @@ const styles = StyleSheet.create({
     },
     countryText: {
         fontStyle: 'italic'
-    }
+    },
+    form: {
+        borderColor: 'gray', 
+        borderBottomWidth: 1,
+
+   }
 });
