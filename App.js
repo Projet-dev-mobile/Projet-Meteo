@@ -25,6 +25,7 @@ export default function App() {
     return <AppLoading />;
   } else {
     return (
+      console.disableYellowBox = true,  //desactive les warnings sur l'appli
         <>
         <Provider store={Store}>
           <IconRegistry icons={ FeatherIconsPack} />

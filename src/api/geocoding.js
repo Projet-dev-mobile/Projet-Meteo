@@ -25,3 +25,16 @@ export async function getGeocodingByCity(city) {
     throw error;
   }
 };  
+
+export async function getGeocodingByCityPostalAndCountry(city, postal, country) {
+  try {
+    const myHeaders = new Headers({ 'user-key': API_KEY });
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${city},+${postal},+${country}&key=${API_KEY}`;
+    const response = await fetch(url, { headers: myHeaders });
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.log(`Error with function getGeocodingByCityPostalAndCountry ${error.message}`);
+    throw error;
+  }
+};  
