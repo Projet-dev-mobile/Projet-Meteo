@@ -178,13 +178,8 @@ import { connect } from 'react-redux';
 };
 
 
-const mapStateToProps = (state) => {
-    return {
-      favLocations: state.favLocationsCity
-    }
-}
 
-export default connect(mapStateToProps)(Search);
+export default Search;
 
 const styles = StyleSheet.create({
     mainView: { flex: 1 },
