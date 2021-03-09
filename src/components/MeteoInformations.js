@@ -66,8 +66,10 @@ const MeteoInformations = ({ route ,favLocations, dispatch , navigation }) => {
       // La localisation est sauvegardé
       // console.log('est sauvegardé');
       return (
-        <DefaultButton iconName='book'
-          onPress={unsaveLocation}
+        <DefaultButton 
+          iconName='book'
+          onPress={unsaveLocation} 
+          appearance='ghost'
         />
       );
     }
@@ -75,6 +77,7 @@ const MeteoInformations = ({ route ,favLocations, dispatch , navigation }) => {
     return (
       <DefaultButton
         iconName='bookmark'
+        appearance='ghost'
         onPress={saveLocation}
       />
     );
@@ -83,7 +86,7 @@ const MeteoInformations = ({ route ,favLocations, dispatch , navigation }) => {
     const parsePrecipitation = () => {
       const correctName = prevision['current']['weather'][0]['description'].charAt(0).toUpperCase() + prevision['current']['weather'][0]['description'].substring(1);
       setCityName(correctName);
-      const precipitation = prevision['minutely'].map(obj => (obj.precipitation));
+      const precipitation = prevision['minutely'].map(obj => (obj.precipitation*100));
       setPrecipitation(precipitation);
       const time = prevision['minutely'].map(obj => ((new Date(obj.dt*1000).toLocaleTimeString().substring(0,5))));
       setTime(time);
@@ -107,7 +110,7 @@ const MeteoInformations = ({ route ,favLocations, dispatch , navigation }) => {
           <View style={styles.currentGlobalInfos}>
               <View style={styles.headerButtons}>
                 <View style={styles.previousPage}> 
-                  <DefaultButton iconName='arrow-left' onPress={previousPage}/>
+                  <DefaultButton appearance='ghost' iconName='arrow-left' onPress={previousPage}/>
                 </View> 
                 <View style={styles.favIcon}>
                   {displaySaveLocation()}
@@ -175,6 +178,7 @@ const MeteoInformations = ({ route ,favLocations, dispatch , navigation }) => {
                 horizontal={true}
                 data={hourly}
                 renderItem={ ( item ) => <PrevisionHourly item={item}/> }
+                
                 />
             </View>
           </View>

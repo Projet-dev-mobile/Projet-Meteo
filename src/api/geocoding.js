@@ -4,6 +4,7 @@ export async function getGeocodingByCoords(latitude,longitude) {
     try {
       const myHeaders = new Headers({ 'user-key': API_KEY });
       const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${API_KEY}`;
+      console.log(url);
       const response = await fetch(url, { headers: myHeaders });
       const json = await response.json();
       return json;

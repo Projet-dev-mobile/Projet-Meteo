@@ -15,6 +15,9 @@ import * as eva from '@eva-design/eva';
 import LocateButton from '../form/LocateButton';
 import SearchButton from '../form/SearchButton';
 import { connect } from 'react-redux';
+import DefaultButton from '../form/DefaultButton';
+import SpecialText from '../form/SpecialText';
+
 
     const Search = ({navigation, favLocations}) => {
    
@@ -49,6 +52,7 @@ import { connect } from 'react-redux';
 
         setCity(locationInformations["address_components"][2]["long_name"]);
         const city_=locationInformations["address_components"][2]["long_name"];
+        console.log(city_)
         setPostal(locationInformations["address_components"][6]["long_name"]);
         setCountry(locationInformations["address_components"][5]["long_name"]);
         navigateToMeteoInformations(latitude_,longitude_,city_);
@@ -123,7 +127,7 @@ import { connect } from 'react-redux';
     return (
         <View style={styles.mainView}>
             <View style={styles.firstView}>
-                <Text style={styles.locateText}>Emplacement</Text>
+                <SpecialText style={styles.locateText} text='Emplacement' />
             </View>
             <View style={styles.secondView}>
                 {/* <CityTextInput style={styles.city}/> */}
@@ -152,10 +156,13 @@ import { connect } from 'react-redux';
             <View style={styles.thirdView}>
                 <View style={styles.searchButton}>
                     {/* <SearchButton/> */}
-                    <Button
+                    {/* <Button
                     title='Rechercher'
                     onPress={getLocation}
-                    />  
+                    />  */}
+                    <DefaultButton children={() =><SpecialText text='Rechercher' style={{paddingLeft: 8,fontSize: 15,
+        fontFamily: "Comfortaa"}}/>} 
+                    appearance='outline' status='basic' iconName='search' style={styles.button} onPress={getLocation}/>
                 </View>
                 <View style={styles.searchLocate}>
                     {/* <LocateButton onPress={test}/> */}
@@ -166,10 +173,12 @@ import { connect } from 'react-redux';
                     {/* placeholder='Partie de clecle' */}
                 {/* /> */}
                 <View style={styles.searchButton}>
-                    <Button
+                    {/* <Button
                         title='Me localiser'
                         onPress={findCoordinates}
-                    />  
+                    /> */}
+                    <DefaultButton children={() =><SpecialText text='Me localiser' style={{paddingLeft: 8,fontSize: 15, fontFamily: "Comfortaa"}}/>} 
+                    appearance='outline' status='basic' iconName='map-pin' onPress={findCoordinates}/>
                 </View> 
             </View>
         </View>
@@ -190,7 +199,7 @@ const styles = StyleSheet.create({
     },
     locateText:{
         fontSize: 30,
-        fontWeight: "bold"
+        fontWeight: "bold",
     },
     secondView:{
         flex: 1,
@@ -237,6 +246,9 @@ const styles = StyleSheet.create({
     form: {
         borderColor: 'gray', 
         borderBottomWidth: 1,
-
+        fontFamily: 'Comfortaa'
+   },
+   button :{
+       backgroundColor: 'white'
    }
 });

@@ -7,7 +7,6 @@ const PrevisionHourly = ({ item }) =>
 {
   return (
   <View style={styles.mainView}>
-        
             <View style={styles.firstView}>
                 <SpecialText style={styles.text} text={item.item.hour}/>
             </View>
@@ -17,7 +16,6 @@ const PrevisionHourly = ({ item }) =>
             <View style={styles.thirdView}>
                 <SpecialText style={styles.text} text={item.item.temp + '°C'}/>
             </View>
-        
   </View> );
 };
 
@@ -27,6 +25,7 @@ const styles = StyleSheet.create({
     mainView:{
         flex: 1,
         paddingLeft: 15,
+        paddingRight:40
     },
     firstView:{
         flex: 1,
@@ -44,7 +43,8 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
     },
+    prevision:{},
     text:{
         fontSize: 12
-    }
+    },
 });

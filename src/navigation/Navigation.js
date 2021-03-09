@@ -2,11 +2,11 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image } from 'react-native';
-
+import { Button, Icon, ListItem} from '@ui-kitten/components';
 import Search from '../components/Search';
 import MeteoInformations from '../components/MeteoInformations';
 import FavLocation from '../components/FavLocation';
-
+import SpecialText from '../form/SpecialText';
 import Assets from '../definitions/Assets';
 
 const SearchNavigation = createStackNavigator();
@@ -42,7 +42,7 @@ function favStackScreens() {
       <FavNavigation.Screen
         name="ViewFav"
         component={FavLocation}
-        options={{ title: 'Favoris' }}
+        options={{ title: 'Favoris', headerShown: false }}
       />
       <FavNavigation.Screen
         name="ViewMeteoInformations"
@@ -58,23 +58,35 @@ function RootStack() {
   return (
     <TabNavigation.Navigator
       tabBarOptions={{
-        
+        style: {
+          backgroundColor: 'rgb(225,225,225)',
+        },
       }}>
       <TabNavigation.Screen
         name="Recherche"
         component={searchStackScreens}
+        
         options={() => ({
           tabBarIcon: ({ color }) => {
-            return <Image source={Assets.icons.search} style={{ tintColor: color }} />;
+            return <Icon name='search' style={{height:30, width:30, color: 'black'}}/>;
+          }, 
+           tabBarLabel: () => {
+             return <SpecialText text='Rechercher' style={{fontSize: 10, paddingLeft:12, fontColor: 'black'
+             }}/>;
+           }
           }
-        })}
+        )}
       />
       <TabNavigation.Screen
         name="Mes lieux"
         component={favStackScreens}
         options={() => ({
           tabBarIcon: ({ color }) => {
-            return <Image source={Assets.icons.globe} style={{ tintColor: color }} />;
+            return <Icon name='star' style={{height:30, width:30, color: 'black'}}/>;
+          }, 
+          tabBarLabel: () => {
+            return <SpecialText text='Mes lieux' style={{fontSize: 10, paddingLeft:5, fontColor: 'black'
+            }}/>;
           }
         })}
       />

@@ -51,18 +51,33 @@ const FavLocation = ({ route, navigation,  favLocations, dispatch }) => {
         }
     }
 
+    const getCityInformations = async(city) => {
+        try {
+            const geocodingSearchResult = await getGeocodingByCity(city);
+            const latitude = geocodingSearchResult.results[0]['geometry']['location']['lat'];
+            const longitude = geocodingSearchResult.results[0]['geometry']['location']['lng'];
+            const country = geocodingSearchResult.results[0]['address_components'][3]['long_name'];
+            // return (latitude,longitude,country);
+        }catch{
+            console.log('erreur call api');
+        }
+    }
+
 
     return (
         <View style={styles.container}>
-            <FlatList
-                data={locations}
-                renderItem={({ item, index }) => (
-                    <FavLocationListItem
-                        locationData={item}
-                        onClick={navigateToMeteoInformations}
-                    />
-                )}
-            />
+            <View style={styles.listView}>
+                <FlatList
+                    data={locations}
+                    renderItem={({ item, index }) => (
+                        <FavLocationListItem
+                            locationData={item}
+                            onClick={navigateToMeteoInformations}
+                            style={styles.list}
+                        />
+                    )}
+                />
+            </View>
         </View>
     );
 }
@@ -80,5 +95,10 @@ const styles = StyleSheet.create({
       flex: 1,
       paddingHorizontal: 12,
       marginTop: 16,
+      paddingTop: '12%',
     },
+    list:{
+        backgroundColor: 'grey'
+    },
+
   });
