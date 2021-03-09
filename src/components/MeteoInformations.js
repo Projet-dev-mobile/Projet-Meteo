@@ -10,8 +10,9 @@ import PrevisionRender from '../components/PrevisionRender';
 import PrevisionHourly from '../components/PrevisionHourly';
 import SpecialText from '../form/SpecialText';
 import Colors from '../definitions/Colors';
+import DefaultButton from '../form/DefaultButton';
 
-const MeteoInformations = ({ route ,favLocations, dispatch }) => {
+const MeteoInformations = ({ route ,favLocations, dispatch , navigation }) => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [city, setCity]=useState(route.params.city);
@@ -45,6 +46,10 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
       }
     };
 
+    const previousPage = async() => {
+      navigation.navigate("ViewSearch");
+    }
+
     // On pourrait définir les actions dans un fichier à part
   const saveLocation = async () => {
     const action = { type: 'SAVE_LOCATION', value: city };
@@ -59,26 +64,19 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
   const displaySaveLocation = () => {
     if (favLocations.findIndex(i => i === city) !== -1) {
       // La localisation est sauvegardé
-      console.log('est sauvegardé');
+      // console.log('est sauvegardé');
       return (
-        <Button
-          title='Retirer des favoris'
-          color={Colors.mainGreen}
+        <DefaultButton iconName='book'
           onPress={unsaveLocation}
-        >
-        Retirer des favoris
-        </Button>
+        />
       );
     }
     // La localisation n'est pas sauvegardé
     return (
-      <Button
-        title='Ajouter aux favoris'
-        color={Colors.mainGreen}
+      <DefaultButton
+        iconName='bookmark'
         onPress={saveLocation}
-      >
-        Ajouter aux favoris
-        </Button>
+      />
     );
   }
 
@@ -106,30 +104,47 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
           </View>) :
           (
             <View style={styles.mainView}>
-              <View>
-              {displaySaveLocation()}
-              </View>
           <View style={styles.currentGlobalInfos}>
-              <View style={styles.cityText}>            
-                <SpecialText style={styles.city} text={route.params.city}/>
-              </View>
-              <View style={styles.descriptionText}>  
-                  <SpecialText style={styles.weatherTemperature} text={cityName + ', ' + parseInt(prevision['current']['temp'])+'°C'}/>
-              </View>
-              <View style={styles.icons}>
-                <View style={styles.degree}>
-                  <Icon name='arrow-down' style={styles.icon} fill='#3366FF'/>
-                  <SpecialText style={styles.textCurrentWeatherInfos} text={parseInt(prevision['daily'][0]['temp']['min']) + '°C'}/>
-                  <Icon name='arrow-up' style={styles.icon} fill='#3366FF'/>
-                  <SpecialText style={styles.textCurrentWeatherInfos} text={parseInt(prevision['daily'][0]['temp']['max']) + '°C'}/>          
+              <View style={styles.headerButtons}>
+                <View style={styles.previousPage}> 
+                  <DefaultButton iconName='arrow-left' onPress={previousPage}/>
+                </View> 
+                <View style={styles.favIcon}>
+                  {displaySaveLocation()}
                 </View>
-                <View style={styles.degree}>
-                  <Icon name='cloud' style={styles.icon} fill='#3366FF'/>
-                  <SpecialText style={styles.textCurrentWeatherInfos} text={prevision['current']['clouds'] + '%'}/>
-                  <Icon name='wind' style={styles.icon} fill='#3366FF'/>
-                  <SpecialText style={styles.textCurrentWeatherInfos} text={parseInt(prevision['current']['wind_speed']) + 'km/h'}/>
-                  <Icon name='umbrella' style={ styles.icon } fill='#3366FF'/>
-                  <SpecialText style={styles.textCurrentWeatherInfos} text={prevision['current']['humidity'] + '%'}/>
+              </View>
+              <View style={styles.allHeaderInfos}>
+                <View style={styles.cityText}>            
+                  <SpecialText style={styles.city} text={route.params.city}/>
+                </View>
+                <View style={styles.descriptionText}>  
+                    <SpecialText style={styles.weatherTemperature} text={cityName + ', ' + parseInt(prevision['current']['temp'])+'°C'}/>
+                </View>
+                <View style={styles.icons}>
+                  <View style={styles.degree}>
+                    <View style={styles.degreMin}>
+                      <Icon name='arrow-down' style={styles.icon} fill='#3366FF'/>
+                      <SpecialText style={styles.textCurrentWeatherInfos} text={parseInt(prevision['daily'][0]['temp']['min']) + '°C'}/>
+                    </View>
+                    <View style={styles.degreMax}>
+                      <Icon name='arrow-up' style={styles.icon} fill='#3366FF'/>
+                      <SpecialText style={styles.textCurrentWeatherInfos} text={parseInt(prevision['daily'][0]['temp']['max']) + '°C'}/>          
+                    </View>
+                  </View>
+                  <View style={styles.degree}>
+                    <View style={styles.degreMin}>
+                      <Icon name='cloud' style={{height:16, width:16}} fill='#3366FF'/>
+                      <SpecialText style={styles.textCurrentWeatherInfos} text={prevision['current']['clouds'] + '%'}/>
+                    </View>
+                    <View style={styles.degreMin}>
+                      <Icon name='wind' style={styles.icon} fill='#3366FF'/>
+                      <SpecialText style={styles.textCurrentWeatherInfos} text={parseInt(prevision['current']['wind_speed']) + 'km/h'}/>
+                    </View>
+                    <View style={styles.degreMax}>
+                      <Icon name='umbrella' style={ styles.icon } fill='#3366FF'/>
+                      <SpecialText style={styles.textCurrentWeatherInfos} text={prevision['current']['humidity'] + '%'}/>
+                    </View>
+                  </View>
                 </View>
               </View>
           </View>
@@ -192,17 +207,31 @@ export default connect(mapStateToProps)(MeteoInformations);
 
 const styles = StyleSheet.create({
   mainView: { flex: 4, 
-  backgroundColor : 'rgb(220,220,220)',},
+  backgroundColor : 'rgb(220,220,220)', paddingTop: '12%'},
   container: {
     flex: 1,
+  },
+  headerButtons:{
+    flexDirection: 'row',
   },
   currentGlobalInfos :{
       flex : 1,
       backgroundColor : 'rgb(210,210,210)',
-      paddingLeft: 15
+      paddingBottom: 10
+  },
+  allHeaderInfos:{
+    marginLeft : '5%',
+    flex: 1
+  },
+  previousPage:{
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  favIcon: {
+    flex: 1,
+    alignItems: 'flex-end'
   },
   cityText: {
-    paddingTop: 13,
     flex: 1
   },
   city: {
@@ -251,9 +280,6 @@ const styles = StyleSheet.create({
   bottomViewText:{
     paddingBottom: 8
   },
-  bottomViewList: {
-
-  },
   title: {
     fontWeight: 'bold',
     fontSize: 20,
@@ -273,12 +299,20 @@ const styles = StyleSheet.create({
   textCurrentWeatherInfos : {
     fontSize: 14,
     fontWeight : 'bold',
-    paddingLeft: 3, paddingRight: 15
+    paddingLeft: 10,
   },
   icons:{
     flex:1,
+
   },
   degree: {
+    flexDirection: 'row',
+  },
+  degreMin: {
+    flexDirection: 'row',
+    paddingRight: 10
+  },
+  degreMax: {
     flexDirection: 'row',
   },
   utils:

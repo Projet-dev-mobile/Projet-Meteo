@@ -27,7 +27,7 @@ function searchStackScreens() {
       <SearchNavigation.Screen
         name="ViewMeteoInformations"
         component={MeteoInformations}
-        options={{ title: 'Meteo',  headerTitle: false }}
+        options={{ title: 'Meteo',  headerTitle: false, headerShown: false }}
       />
      
     </SearchNavigation.Navigator>
@@ -47,7 +47,7 @@ function favStackScreens() {
       <FavNavigation.Screen
         name="ViewMeteoInformations"
         component={MeteoInformations}
-        options={{ title: 'Meteo' }}
+        options={{ title: 'Meteo' , headerShown: false}}
       />
     </FavNavigation.Navigator>
   )
