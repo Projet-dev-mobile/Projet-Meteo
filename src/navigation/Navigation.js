@@ -2,12 +2,14 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image } from 'react-native';
+import { Button, Icon} from '@ui-kitten/components';
 
 import Search from '../components/Search';
 import MeteoInformations from '../components/MeteoInformations';
 import FavLocation from '../components/FavLocation';
 
 import Assets from '../definitions/Assets';
+import DefaultButton from '../form/DefaultButton'
 
 const SearchNavigation = createStackNavigator();
 const TabNavigation = createBottomTabNavigator();
@@ -27,7 +29,7 @@ function searchStackScreens() {
       <SearchNavigation.Screen
         name="ViewMeteoInformations"
         component={MeteoInformations}
-        options={{ title: 'Meteo',  headerTitle: false }}
+        options={{ title: 'Meteo',  headerTitle: false, headerShown: false  }}
       />
      
     </SearchNavigation.Navigator>

@@ -9,8 +9,9 @@ import DisplayError from '../components/DisplayError';
 import PrevisionRender from '../components/PrevisionRender';
 import PrevisionHourly from '../components/PrevisionHourly';
 import SpecialText from '../form/SpecialText';
+import DefaultButton from '../form/DefaultButton';
 
-const MeteoInformations = ({ route ,favLocations, dispatch }) => {
+const MeteoInformations = ({ route ,favLocations, dispatch, navigation }) => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [city, setCity]=useState(route.params.city);
@@ -44,6 +45,10 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
       }
     };
 
+    const previousPage = async() => {
+      navigation.navigate("ViewSearch");
+    }
+
     // On pourrait définir les actions dans un fichier à part
     const saveLocation = async () => {
       const action = { type: 'SAVE_LOCATION', value : city };
@@ -56,30 +61,33 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
     }
 
     const displaySaveLocation = () => {
+      // console.log(favLocations);
       if (favLocations.findIndex(i => i === city) !== -1) {
         // Le restaurant est sauvegardé
+        //  console.log('true') 
         return (
-          <Button
-            title='Retirer des favoris'
-            color={Colors.mainGreen}
-            onPress={unsaveLocation}
-          />
+          <View>
+          <DefaultButton iconName='book' onPress={previousPage}/>
+          </View>
         );
       }
+      else {
+      // /console.log('false')
       // Le restaurant n'est pas sauvegardé
-      return (
-        <Button
-          title='Ajouter aux favoris'
-          color={Colors.mainGreen}
-          onPress={saveLocation}
-        />
-      );
+        // console.log('false');
+        return ( <View>
+          <DefaultButton iconName='bookmark' onPress={previousPage}/>
+          </View>
+          // console.log('false')
+        );
+      }
     }
 
     const parsePrecipitation = () => {
       const correctName = prevision['current']['weather'][0]['description'].charAt(0).toUpperCase() + prevision['current']['weather'][0]['description'].substring(1);
       setCityName(correctName);
       const precipitation = prevision['minutely'].map(obj => (obj.precipitation));
+      // const precipitation = [20,30,40,18,72,23,93,49,20,19,90]
       setPrecipitation(precipitation);
       const time = prevision['minutely'].map(obj => ((new Date(obj.dt*1000).toLocaleTimeString().substring(0,5))));
       setTime(time);
@@ -101,6 +109,15 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
           (
             <View style={styles.mainView}>
           <View style={styles.currentGlobalInfos}>
+          {/* iconName='bookmark' height='20' width='30' */}
+              <View style={styles.headerIcons}>
+                <View stye={styles.returnIcon}>
+                  <DefaultButton iconName='arrow-left' height={10} width={20}  onPress={displaySaveLocation}/>
+               </View>
+               <View stye={styles.favIcon}>
+                 
+               </View>
+              </View>
               <View style={styles.cityText}>            
                 <SpecialText style={styles.city} text={route.params.city}/>
               </View>
@@ -175,7 +192,7 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
 
 const mapStateToProps = (state) => {
   return {
-    favLocations: state.favLocationsCIty
+    favLocations: state.favLocationsCity
   }
 }
 
@@ -190,7 +207,19 @@ const styles = StyleSheet.create({
   currentGlobalInfos :{
       flex : 1,
       backgroundColor : 'rgb(210,210,210)',
-      paddingLeft: 15
+      paddingLeft: 15,
+      paddingTop: '13%'
+  },
+  headerIcons:{
+    flexDirection: 'row',
+    flex: 1,
+  },
+  returnIcon:{
+    flex:1
+  },
+  favIcon: {
+    flex: 2,
+    justifyContent: 'flex-end'
   },
   cityText: {
     paddingTop: 13,

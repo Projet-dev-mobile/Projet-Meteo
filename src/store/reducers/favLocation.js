@@ -12,7 +12,7 @@ function favLocations(state = initialState, action) {
     case 'UNSAVE_LOCATION':
       nextState = {
         ...state,
-        favLocationsCity: state.favLocationsCity.filter(city => city !== action.value)
+        favLocationsCity: state.favLocationsCity.filter(id => id !== action.value)
       };
       return nextState || state
     default:

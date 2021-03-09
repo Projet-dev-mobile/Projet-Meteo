@@ -1,5 +1,5 @@
 import { createStore } from 'redux';
 
-import favLocationsReducer from './reducers/favLocation';
+import favLocations from './reducers/favLocation';
 
-export default createStore(favLocationsReducer);
+export default createStore(favLocations);
