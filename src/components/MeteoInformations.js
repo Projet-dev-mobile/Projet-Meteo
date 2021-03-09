@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ActivityIndicator, ScrollView, Image } from 'react-native';
-import { Text, Icon, Button} from '@ui-kitten/components';
+import { View, StyleSheet, ActivityIndicator, FlatList, ScrollView, Image, Text, ListView } from 'react-native';
+import { Icon, Button} from '@ui-kitten/components';
 import { getPrevisionForSevenDaysCity } from '../api/openweathermap';
 import { Line, parse } from 'react-native-svg';
 import { LineChart, Grid } from 'react-native-svg-charts';
 import { connect } from 'react-redux';
 import DisplayError from '../components/DisplayError';
+import PrevisionRender from '../components/PrevisionRender';
+import PrevisionHourly from '../components/PrevisionHourly';
+import SpecialText from '../form/SpecialText';
 
 const MeteoInformations = ({ route ,favLocations, dispatch }) => {
-
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [city, setCity]=useState(route.params.city);
@@ -16,6 +18,9 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
   const [prevision, setPrevision] = useState(null);
   const [precipitation, setPrecipitation] = useState(null);
   const [time, setTime] = useState(null);
+  const [sevenDays, setSevenDays] = useState(null);
+  const [hourly, setHourly] = useState(null);
+  const [cityName, setCityName] = useState(null);
 
     useEffect(() => {
       setCity(route.params.city);
@@ -28,11 +33,11 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
       if (prevision != null)
         parsePrecipitation();
     },[prevision]);
+    
     const requestMeteo = async(latitude, longitude) => {
       try {
         const meteoSearchResult = await getPrevisionForSevenDaysCity(latitude, longitude);
         setPrevision(meteoSearchResult);
-        console.log(prevision);
         setIsLoading(false);
       } catch (error) {
         setIsError(true);
@@ -70,18 +75,20 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
         />
       );
     }
-    
+
     const parsePrecipitation = () => {
-      
-      // console.log(prevision);
-      // console.log(data);
-       const precipitation = prevision['minutely'].map(obj => (obj.precipitation));
-       setPrecipitation(precipitation);
-       console.log(precipitation);
-       const time = prevision['minutely'].map(obj => (obj.dt));
-       setTime(time);
-       console.log(time);
-    }
+      const correctName = prevision['current']['weather'][0]['description'].charAt(0).toUpperCase() + prevision['current']['weather'][0]['description'].substring(1);
+      setCityName(correctName);
+      const precipitation = prevision['minutely'].map(obj => (obj.precipitation));
+      setPrecipitation(precipitation);
+      const time = prevision['minutely'].map(obj => ((new Date(obj.dt*1000).toLocaleTimeString().substring(0,5))));
+      setTime(time);
+      const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+      const sevenDays = prevision['daily'].map(obj =>({'day' : days[new Date(obj.dt*1000).getDay()], 'icon' : obj.weather[0].icon, 'humidity' : obj.humidity, 'min' : parseInt(obj.temp.min,10), 'max' : parseInt(obj.temp.max,10)}));
+      setSevenDays(sevenDays);
+      const hourly = prevision['hourly'].map(obj => ({'hour' : new Date(obj.dt*1000).toLocaleTimeString().substring(0,5), 'icon' : 'https://openweathermap.org/img/wn/' + obj.weather[0].icon + '@2x.png', 'temp' : parseInt(obj.temp, 10)}));
+      setHourly(hourly);
+      };
 
     return (
       <View style={styles.container}>
@@ -93,43 +100,71 @@ const MeteoInformations = ({ route ,favLocations, dispatch }) => {
           </View>) :
           (
             <View style={styles.mainView}>
-          <View style={styles.currentGlobalInfos}>            
-              <Text style={styles.city}>{route.params.city}</Text>
-              <Text style={styles.weatherTemperature}>{prevision['current']['weather'][0]['description']}, {prevision['current']['temp']}°C</Text>
+          <View style={styles.currentGlobalInfos}>
+              <View style={styles.cityText}>            
+                <SpecialText style={styles.city} text={route.params.city}/>
+              </View>
+              <View style={styles.descriptionText}>  
+                  <SpecialText style={styles.weatherTemperature} text={cityName + ', ' + parseInt(prevision['current']['temp'])+'°C'}/>
+              </View>
+              <View style={styles.icons}>
                 <View style={styles.degree}>
-                  <Icon name='arrow-down' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text style={styles.textCurrentWeatherInfos}>{prevision['daily'][0]['temp']['min']}</Text>
-                  <Icon name='arrow-up' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text style={styles.textCurrentWeatherInfos}>{prevision['daily'][0]['temp']['max']}</Text>
+                  <Icon name='arrow-down' style={styles.icon} fill='#3366FF'/>
+                  <SpecialText style={styles.textCurrentWeatherInfos} text={parseInt(prevision['daily'][0]['temp']['min']) + '°C'}/>
+                  <Icon name='arrow-up' style={styles.icon} fill='#3366FF'/>
+                  <SpecialText style={styles.textCurrentWeatherInfos} text={parseInt(prevision['daily'][0]['temp']['max']) + '°C'}/>          
                 </View>
-                <View style={styles.utils}>
-                  <Icon name='cloud' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text style={styles.textCurrentWeatherInfos}>{prevision['current']['clouds']}%</Text>
-                  <Icon name='wind' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text>{prevision['current']['wind_speed']}km/h</Text>
-                  <Icon name='umbrella' style={{ width: 20, height: 20 }} fill='#3366FF'/>
-                  <Text>{prevision['current']['humidity']}%</Text>
+                <View style={styles.degree}>
+                  <Icon name='cloud' style={styles.icon} fill='#3366FF'/>
+                  <SpecialText style={styles.textCurrentWeatherInfos} text={prevision['current']['clouds'] + '%'}/>
+                  <Icon name='wind' style={styles.icon} fill='#3366FF'/>
+                  <SpecialText style={styles.textCurrentWeatherInfos} text={parseInt(prevision['current']['wind_speed']) + 'km/h'}/>
+                  <Icon name='umbrella' style={ styles.icon } fill='#3366FF'/>
+                  <SpecialText style={styles.textCurrentWeatherInfos} text={prevision['current']['humidity'] + '%'}/>
                 </View>
+              </View>
           </View>
 
           <View style={styles.middle1}>
-            <Text style={styles.title}>Précipitations</Text>
-            <LineChart
-                style={{ height: 120 }}
-                data={precipitation}
-                svg={{ stroke: 'rgb(134, 65, 244)' }}
-                contentInset={{ top: 20, bottom: 20 }}
-            >
-                <Grid />
-            </LineChart>
+            <View style={styles.middle1Text}>
+              <SpecialText style={styles.title} text={'Précipitations'}/>
+            </View>
+            <View style={styles.middle1Chart}>
+              <LineChart
+                  style={{ height: 100 }}
+                  data={precipitation}
+                  yMax={100}
+                  yMin={0}
+                  svg={{ strokeWidth:2, stroke: 'rgb(54, 218, 250)' }}
+                  showGrid={false}
+              >
+              </LineChart>
+            </View>
           </View>
 
           <View style={styles.middle2}>
-            <Text style={styles.title}>Evolution 24h</Text>
+            <View style={styles.middle2Text}>
+              <SpecialText style={styles.title} text={'Evolution 24h'}/>
+            </View>
+            <View style={styles.middle2List}>
+              <FlatList
+                horizontal={true}
+                data={hourly}
+                renderItem={ ( item ) => <PrevisionHourly item={item}/> }
+                />
+            </View>
           </View>
 
           <View style={styles.bottomView}>
-            <Text style={styles.title}>Prévisions 7 jours</Text>
+            <View style={styles.bottomViewText}>
+              <SpecialText style={styles.title} text={'Prévisions 7 jours'} />
+            </View>
+            <View style={styles.bottomViewList}>
+              <FlatList
+                data={sevenDays}
+                renderItem={ ( item ) => <PrevisionRender item={item}/> }
+                />
+            </View>
           </View>
         </View>
           )
@@ -147,54 +182,76 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps)(MeteoInformations);
 
 const styles = StyleSheet.create({
-  mainView: { flex: 4 },
+  mainView: { flex: 4, 
+  backgroundColor : 'rgb(220,220,220)',},
   container: {
     flex: 1,
   },
   currentGlobalInfos :{
       flex : 1,
-      marginLeft : '5%',
-      marginTop : '5%',
-      marginBottom : '5%',
-      marginRight : '5%',
-      borderWidth: 1,
+      backgroundColor : 'rgb(210,210,210)',
+      paddingLeft: 15
+  },
+  cityText: {
+    paddingTop: 13,
+    flex: 1
+  },
+  city: {
+    fontFamily: 'Comfortaa',
+    fontSize: 30,
+  },
+  descriptionText: {
+    paddingLeft: 2,
+    flex: 1
   },
   middle1 :{
     flex : 1,
     marginLeft : '5%',
-    marginTop : '5%',
-    marginBottom : '5%',
     marginRight : '5%',
-    borderWidth: 1,
+  },
+  iconView:{
+    flexDirection: 'row',
+  },
+  middle1Text :{
+    paddingBottom: 8,
+    paddingTop: 8
+  },
+  middle1Chart: {
+    borderLeftWidth:1,
+    borderBottomWidth: 1
   },
   middle2 :{
     flex : 1,
-    marginLeft : '5%',
-    marginTop : '5%',
-    marginBottom : '5%',
-    marginRight : '5%',
-    borderWidth: 1,
+  },
+  middle2Text:{
+    flex: 1,
+    marginLeft : '5%'
+  },
+  middle2List:{
+    flex: 3,
+    marginLeft : '8%',
+    marginRight : '8%',
   },
   bottomView :{
     flex : 1,
+    paddingTop: 10,
     marginLeft : '5%',
-    marginTop : '5%',
-    marginBottom : '5%',
     marginRight : '5%',
-    borderWidth: 1,
+    marginBottom: '8%'
   },
-
-  city: {
-    paddingLeft: 10,
-    fontWeight: 'bold',
-    fontSize: 25,
+  bottomViewText:{
+    paddingBottom: 8
   },
+  bottomViewList: {
 
+  },
   title: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 20,
   },
-
+  hourly:{
+    flexDirection: 'row',
+  },
   weatherTemperature: {
     fontSize: 20,
     fontWeight : 'bold',
@@ -202,12 +259,15 @@ const styles = StyleSheet.create({
 
   currentWeatherInfos : {
     position: 'absolute',
-    bottom: 0,
     flexDirection: 'row'
   },
   textCurrentWeatherInfos : {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight : 'bold',
+    paddingLeft: 3, paddingRight: 15
+  },
+  icons:{
+    flex:1,
   },
   degree: {
     flexDirection: 'row',
@@ -216,13 +276,15 @@ const styles = StyleSheet.create({
   {
     flexDirection: 'row'
   },
-
+  icon: {
+    height: 18,
+    width: 18
+  },
   containerLoading: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   containerScroll: {
     flex: 1,
     paddingHorizontal: 12,
