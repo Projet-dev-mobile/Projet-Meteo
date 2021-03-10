@@ -75,7 +75,7 @@ const FavLocationListItem = ({onClick, navigation, locationData }) => {
             setCurrentTemp(temp);
             const tempMin_ = parseInt(previsionData['daily'][0]['temp']['min']) + '°C';
             setTempMin(tempMin_);
-            const tempMax_ = parseInt(prevision['daily'][0]['temp']['max']) + '°C';
+            const tempMax_ = parseInt(previsionData['daily'][0]['temp']['max']) + '°C';
             setTempMax(tempMax_);
             //console.log(correctName);
         }
