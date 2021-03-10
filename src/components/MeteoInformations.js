@@ -86,7 +86,7 @@ const MeteoInformations = ({ route ,favLocations, dispatch , navigation }) => {
     const parsePrecipitation = () => {
       const correctName = prevision['current']['weather'][0]['description'].charAt(0).toUpperCase() + prevision['current']['weather'][0]['description'].substring(1);
       setCityName(correctName);
-      const precipitation = prevision['minutely'].map(obj => (obj.precipitation*100));
+      const precipitation = prevision['minutely'].map(obj => (obj.precipitation*50));
       setPrecipitation(precipitation);
       const time = prevision['minutely'].map(obj => ((new Date(obj.dt*1000).toLocaleTimeString().substring(0,5))));
       setTime(time);
@@ -271,8 +271,8 @@ const styles = StyleSheet.create({
   },
   middle2List:{
     flex: 3,
-    marginLeft : '8%',
-    marginRight : '8%',
+    marginLeft : '5%',
+    marginRight : '5%',
   },
   bottomView :{
     flex : 1,

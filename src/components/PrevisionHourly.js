@@ -24,8 +24,8 @@ export default PrevisionHourly;
 const styles = StyleSheet.create({
     mainView:{
         flex: 1,
-        paddingLeft: 15,
-        paddingRight:40
+        paddingLeft: 20,
+        paddingRight:45
     },
     firstView:{
         flex: 1,

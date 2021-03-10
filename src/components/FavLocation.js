@@ -11,6 +11,10 @@ const FavLocation = ({ route, navigation,  favLocations, dispatch }) => {
     const [locations, setLocations] = useState([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isError, setIsError] = useState(false);
+    
+    useEffect(() =>{
+        refreshFavLocations();
+    }, [favLocations]);
 
     useEffect(() => {
         console.log(favLocations);
@@ -69,7 +73,7 @@ const FavLocation = ({ route, navigation,  favLocations, dispatch }) => {
             <View style={styles.listView}>
                 <FlatList
                     data={locations}
-                    renderItem={({ item, index }) => (
+                    renderItem={({ item }) => (
                         <FavLocationListItem
                             locationData={item}
                             onClick={navigateToMeteoInformations}
