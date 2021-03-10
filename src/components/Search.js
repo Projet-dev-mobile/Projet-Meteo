@@ -4,16 +4,11 @@ import {Alert, View, TextInput, Button, StyleSheet, Text, FlatList, Keyboard } f
 import { getGeocodingByCity, getGeocodingByCoords, getGeocodingByCityPostalAndCountry } from '../api/geocoding';
 import { getCurrentWeahterByCity } from '../api/openweathermap';
 import { getPrevisionForSevenDaysCity } from '../api/openweathermap';
-import CityTextInput from '../form/CityInput';
-import PostalCodeInput from '../form/PostalCodeInput';
-import CountryTextInput from '../form/CountryInput';
 import { ApplicationProvider, IconRegistry, Layout } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { default as theme } from '../../theme.json';
 import { default as mapping } from '../../mapping.json';
 import * as eva from '@eva-design/eva';
-import LocateButton from '../form/LocateButton';
-import SearchButton from '../form/SearchButton';
 import { connect } from 'react-redux';
 import DefaultButton from '../form/DefaultButton';
 import SpecialText from '../form/SpecialText';

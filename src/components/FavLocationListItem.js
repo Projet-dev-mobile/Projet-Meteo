@@ -43,14 +43,13 @@ const FavLocationListItem = ({onClick, navigation, locationData }) => {
                 setLatitude(lat);
                 const long = current.results[0]['geometry']['location']['lng'];
                 setLongitude(long);
-                console.log(locationData);
                 // const hour = current['hourly'].map(obj => ({'hour' : new Date(obj.dt*1000).toLocaleTimeString().substring(0,5), 'icon' : 'https://openweathermap.org/img/wn/' + obj.weather[0].icon + '@2x.png', 'temp' : parseInt(obj.temp, 10)}));
                 // setHourly(hour);
                 // console.log(data);
             }
             catch
             {
-                "erreur call api coords"
+                console.log("erreur call api coords");
             }
         }
     
@@ -61,13 +60,14 @@ const FavLocationListItem = ({onClick, navigation, locationData }) => {
                 //console.log(lat);
             }
             catch {
-                "erreur call api"
+                console.log("erreur call api");
             }
         }
 
         const parseData = () => {
             console.log(previsionData)
-            const hourly_ = previsionData['hourly'].map(obj => ({'hour' : new Date(obj.dt*1000).toLocaleTimeString().substring(0,5), 'icon' : 'https://openweathermap.org/img/wn/' + obj.weather[0].icon + '@2x.png', 'temp' : parseInt(obj.temp, 10)}));
+            var hourly_ = previsionData['hourly'].map(obj => ({'hour' : new Date(obj.dt*1000).toLocaleTimeString().substring(0,5), 'icon' : 'https://openweathermap.org/img/wn/' + obj.weather[0].icon + '@2x.png', 'temp' : parseInt(obj.temp, 10)}));
+            hourly_ = [hourly_[4], hourly_[8], hourly_[12], hourly_[16]];
             setHourly(hourly_);
             const correctName = previsionData['current']['weather'][0]['description'].charAt(0).toUpperCase() + previsionData['current']['weather'][0]['description'].substring(1);
             setDescription(correctName);
@@ -113,27 +113,34 @@ const FavLocationListItem = ({onClick, navigation, locationData }) => {
         <TouchableOpacity style={styles.container}
         onPress={() => { onClick(locationData) }}>
             <View style={styles.location}>
-                <View style={styles.viewName}>
-                    <SpecialText text={locationData} style={styles.locationName}/>
-                    <SpecialText text={description + ', ' + currentTemp } style={styles.description}/>
-                </View>
-                <View style={styles.degree}>
-                    <View style={styles.degreMin}>
-                      <Icon name='arrow-down' style={styles.icon} fill='#3366FF'/>
-                      <SpecialText style={styles.textCurrentWeatherInfos} text={tempMin}/>
+               
+                    <View style={styles.cityName}>
+                        <SpecialText text={locationData} style={styles.locationName}/>
                     </View>
-                    <View style={styles.degreMax}>
-                      <Icon name='arrow-up' style={styles.icon} fill='#3366FF'/>
-                      <SpecialText style={styles.textCurrentWeatherInfos} text={tempMax}/>          
+                    <View style={styles.header}>
+                        <View style={styles.descriptionText}>
+                            <SpecialText text={description + ', ' + currentTemp } style={styles.description}/>
+                        </View>
+                        <View style={styles.degree}>
+                            <View style={styles.degreMin}>
+                                <Icon name='arrow-down' style={styles.icon} fill='#3366FF'/>
+                                <SpecialText style={styles.textCurrentWeatherInfos} text={tempMin}/>
+                            </View>
+                            <View style={styles.degreMax}>
+                                <Icon name='arrow-up' style={styles.icon} fill='#3366FF'/>
+                                <SpecialText style={styles.textCurrentWeatherInfos} text={tempMax}/>          
+                            </View>
+                        </View>
                     </View>
-                  </View>
                 <View style={styles.viewPrevision}>
                     <FlatList
                         horizontal={true}
                         data={hourly}
                         renderItem={ ( item ) => <PrevisionHourly item={item}/> }
                         style={styles.list}
-                    />
+                       scrollEnabled={false}
+                        showsHorizontalScrollIndicator={false}
+                        />
                 </View>
             </View>
         </TouchableOpacity>
@@ -147,6 +154,9 @@ const styles = StyleSheet.create({
     container: {
       paddingVertical: 8,
 
+    },
+    cityName: {
+        flex: 1
     },
     location: {
         borderWidth: 1,
@@ -166,21 +176,35 @@ const styles = StyleSheet.create({
         paddingBottom: 15
     },
     viewPrevision: {
-        flex:2
+        flex:2,
+        paddingLeft: 10,
+        paddingTop:'5%'
+    },
+    header:{
+        flexDirection:'row'
     },
     description:{
+        flex: 1,
         fontSize: 20,
         paddingLeft: 15
     },
     degree: {
+        paddingLeft: '20%',
+        flex:1,
         flexDirection: 'row',
       },
       degreMin: {
         flexDirection: 'row',
-        paddingRight: 10
+        paddingRight: 10,
+        alignItems:'center'
       },
       degreMax: {
         flexDirection: 'row',
+        alignItems:'center'
+
+      },
+      descriptionText:{
+          flex:2
       },
       icon:{
 

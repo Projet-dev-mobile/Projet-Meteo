@@ -47,7 +47,7 @@ const MeteoInformations = ({ route ,favLocations, dispatch , navigation }) => {
     };
 
     const previousPage = async() => {
-      navigation.navigate("ViewSearch");
+      navigation.goBack();
     }
 
     // On pourrait définir les actions dans un fichier à part
