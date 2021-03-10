@@ -12,8 +12,9 @@ import * as Font from 'expo-font';
 import  AppLoading  from 'expo-app-loading';
 import { FeatherIconsPack } from './feather-icons';
 import { Provider } from 'react-redux';
-import Store from './src/store/config';
+import { Store, Persistor } from './src/store/config';
 import { useFonts } from '@expo-google-fonts/inter';
+import { PersistGate } from 'redux-persist/integration/react';
 
 export default function App() {
   
@@ -28,6 +29,7 @@ export default function App() {
       console.disableYellowBox = true,  //desactive les warnings sur l'appli
         <>
         <Provider store={Store}>
+          <PersistGate loading={null} persistor={Persistor}>
           <IconRegistry icons={ FeatherIconsPack} />
           <ApplicationProvider 
           {...eva} 
@@ -38,6 +40,7 @@ export default function App() {
               <Navigation />
             </NavigationContainer>
           </ApplicationProvider>
+          </PersistGate>
         </Provider>
         </>
       );
