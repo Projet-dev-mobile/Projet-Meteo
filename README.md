@@ -9,7 +9,8 @@ Le projet consiste à réaliser une application utilisant les principaux éléme
 * [Expo](https://docs.expo.io/) - Framework pour applications React
 
 ## Auteurs
-Listez le(s) auteur(s) du projet ici !
+
+Projet réalisé par :
 * **Vincent BIR** _alias_ [@Vinzb](https://github.com/Vinzb)
 * **Clément CHEVALET** _alias_ [@clementchvlt](https://github.com/clementchvlt)
 
