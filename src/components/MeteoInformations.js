@@ -22,7 +22,6 @@ const MeteoInformations = ({ route, favLocations, dispatch, navigation }) => {
   const [country, setCountry] = useState(route.params.country);
   const [prevision, setPrevision] = useState(null);
   const [precipitation, setPrecipitation] = useState(null);
-  const [time, setTime] = useState(null);
   const [sevenDays, setSevenDays] = useState(null);
   const [hourly, setHourly] = useState(null);
   const [cityName, setCityName] = useState(null);
@@ -98,10 +97,6 @@ const MeteoInformations = ({ route, favLocations, dispatch, navigation }) => {
       (obj) => obj.precipitation * 50
     );
     setPrecipitation(precipitation);
-    const time = prevision["minutely"].map((obj) =>
-      new Date(obj.dt * 1000).toLocaleTimeString().substring(0, 5)
-    );
-    setTime(time);
     const days = [
       "Lundi",
       "Mardi",
@@ -119,13 +114,14 @@ const MeteoInformations = ({ route, favLocations, dispatch, navigation }) => {
       max: parseInt(obj.temp.max, 10),
     }));
     setSevenDays(sevenDays);
-    const hourly = prevision["hourly"].map((obj) => ({
+    var hourly_ = prevision["hourly"].map((obj) => ({
       hour: new Date(obj.dt * 1000).toLocaleTimeString().substring(0, 5),
       icon:
         "https://openweathermap.org/img/wn/" + obj.weather[0].icon + "@2x.png",
       temp: parseInt(obj.temp, 10),
     }));
-    setHourly(hourly);
+    hourly_.length = 25;
+    setHourly(hourly_);
   };
 
   return (
@@ -228,7 +224,7 @@ const MeteoInformations = ({ route, favLocations, dispatch, navigation }) => {
             </View>
             <View style={styles.middle1Chart}>
               <LineChart
-                style={{ height: 100 }}
+                style={{ height: '100%' }}
                 data={precipitation}
                 yMax={100}
                 yMin={0}
@@ -316,15 +312,18 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: "5%",
     marginRight: "5%",
+    marginBottom: '2%'
   },
   iconView: {
     flexDirection: "row",
   },
   middle1Text: {
+    flex: 1,
     paddingBottom: 8,
     paddingTop: 8,
   },
   middle1Chart: {
+    flex:5,
     borderLeftWidth: 1,
     borderBottomWidth: 1,
   },

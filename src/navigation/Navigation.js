@@ -76,7 +76,7 @@ function RootStack() {
             return (
               <SpecialText
                 text="Rechercher"
-                style={{ fontSize: 10, paddingLeft: 12, fontColor: "black" }}
+                style={{ fontSize: 10, paddingLeft: '4%', fontColor: "black" }}
               />
             );
           },
@@ -85,6 +85,7 @@ function RootStack() {
       <TabNavigation.Screen
         name="Mes lieux"
         component={favStackScreens}
+        style={{    justifyContent: "center"}}
         options={() => ({
           tabBarIcon: ({ color }) => {
             return (
@@ -98,7 +99,7 @@ function RootStack() {
             return (
               <SpecialText
                 text="Mes lieux"
-                style={{ fontSize: 10, paddingLeft: 5, fontColor: "black" }}
+                style={{ fontSize: 10, paddingLeft: '4%', fontColor: "black" }}
               />
             );
           },
