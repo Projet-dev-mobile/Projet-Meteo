@@ -1,6 +1,6 @@
 # Projet de développement mobile M2 GI
 
-Le projet consiste à réaliser une application utilisant les principaux éléments du développement mobile avec React Native. Cette application permet de consulter la météo actuelle ainsi que les prévisions météo associées à un enmplacement.
+Le projet consiste à réaliser une application utilisant les principaux éléments du développement mobile avec React Native. Cette application permet de consulter la météo actuelle ainsi que les prévisions météo associées à un emplacement.
 
 ## Fabriqué avec
 
