@@ -25,6 +25,7 @@ const MeteoInformations = ({ route, favLocations, dispatch, navigation }) => {
   const [sevenDays, setSevenDays] = useState(null);
   const [hourly, setHourly] = useState(null);
   const [cityName, setCityName] = useState(null);
+  const [time, setTime] = useState(null);
 
   useEffect(() => {
     setCity(route.params.city);
@@ -97,6 +98,10 @@ const MeteoInformations = ({ route, favLocations, dispatch, navigation }) => {
       (obj) => obj.precipitation * 50
     );
     setPrecipitation(precipitation);
+    const timefull = prevision['minutely'].map(
+      obj => ((new Date(obj.dt*1000).toLocaleTimeString().substring(0,5))));
+    const time_ = [timefull[0],timefull[29], timefull[59]]
+    setTime(time_);
     const days = [
       "Lundi",
       "Mardi",
@@ -232,6 +237,17 @@ const MeteoInformations = ({ route, favLocations, dispatch, navigation }) => {
                 showGrid={false}
               ></LineChart>
             </View>
+            <View style={styles.globalTime}>
+              <View style={styles.time1}>
+                <SpecialText style={styles.time} text={time[0]}/>
+              </View>
+              <View style={styles.time2}>
+                <SpecialText style={styles.time} text={time[1]}/>
+              </View>
+              <View style={styles.time3}>
+                <SpecialText style={styles.time} text={time[2]}/>
+              </View>
+            </View>
           </View>
 
           <View style={styles.middle2}>
@@ -353,6 +369,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 20,
   },
+  time: {
+    fontSize: 11,
+  },
   hourly: {
     flexDirection: "row",
   },
@@ -400,4 +419,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 16,
   },
+  globalTime:{
+    flex:1,
+    flexDirection: "row",
+  },
+  time2:{
+    paddingLeft: '38%'
+  },
+  time3:{
+    paddingLeft:'40%',
+    paddingRight:'10%'
+  }
 });
